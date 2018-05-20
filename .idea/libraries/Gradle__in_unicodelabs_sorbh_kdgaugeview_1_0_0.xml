@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: in.unicodelabs.sorbh:kdgaugeview-1.0.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/kdgaugeview-1.0.0.aar/7b0f601bc796b38b5ad3c4a435dd71cb/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/kdgaugeview-1.0.0.aar/7b0f601bc796b38b5ad3c4a435dd71cb/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/in.unicodelabs.sorbh/kdgaugeview/1.0.0/40b4f85a53c51e956229adfbbcb916dd92c6ee6c/kdgaugeview-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,10 @@
+#Sun May 20 15:10:57 EET 2018
+path.2=classes3.dex
+path.1=classes2.dex
+path.0=classes.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
+renamed.0=classes.dex
+base.2=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/0
+base.1=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/0
+base.0=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/0

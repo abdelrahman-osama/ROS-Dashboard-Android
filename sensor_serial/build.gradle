@@ -1,0 +1,81 @@
+/*
+ * Copyright (C) 2014 Jamie Cho.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+/* 
+   Examples of 
+   1) dependencies from another project in this gradle stack.
+   2,3) open ranged dependencies from a maven repository.
+
+   It's a good idea to restrict the open ranged dependency to
+   the patch version to avoid breakages due to api changes
+   which usually occur on minor and major version numbers.
+ */
+
+apply plugin: 'com.android.application'
+
+dependencies {
+	api 'org.ros.rosjava_core:rosjava:[0.3,0.4)'
+	api 'org.ros.android_core:android_10:[0.3,0.4)'
+	api 'org.ros.android_core:android_15:[0.3,0.4)'
+
+	//implementation 'com.google.android.gms:play-services-location:15.0.1'
+
+	implementation 'com.android.support:appcompat-v7:26.1.0'
+	//noinspection GradleCompatible
+	implementation 'com.google.android.gms:play-services-maps:15.0.0'
+	implementation 'com.android.support:support-v4:26.1.0'
+	implementation 'com.android.support:design:26.1.0'
+	implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+	testImplementation 'junit:junit:4.12'
+	androidTestImplementation 'com.android.support.test:runner:1.0.1'
+	androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+	implementation 'com.github.jd-alexander:library:1.1.0'
+	implementation "com.google.android.gms:play-services-location:15.0.0"
+	implementation 'com.google.android.gms:play-services-places:15.0.0'
+	implementation 'com.android.support:design:26.1.0'
+	implementation 'com.android.support:cardview-v7:26.1.0'
+	implementation 'com.android.support:recyclerview-v7:26.1.0'
+	implementation 'com.akexorcist:googledirectionlibrary:1.1.1'
+	implementation 'com.tapadoo.android:alerter:2.0.5'
+	implementation 'com.google.firebase:firebase-messaging:15.0.2'
+	implementation 'com.android.volley:volley:1.1.0'
+	implementation 'com.google.code.gson:gson:2.8.2'
+	implementation 'com.github.anastr:speedviewlib:1.2.0'
+	implementation 'in.unicodelabs.sorbh:kdgaugeview:1.0.0'
+	implementation 'com.android.support:multidex:1.0.3'
+
+	//compile 'com.google.android.gms:play-services-location:15.0.1'
+	/*
+               compile project(':local_android_library_dependency')
+               compile 'org.ros.android_core:android_10:[0.2,0.3)'
+               compile 'org.ros.android_core:android_15:[0.2,0.3)'
+               compile 'com.github.rosjava.android_extras:gingerbread:[0.2,0.3)'
+               compile 'org.ros.rosjava_messages:tf2_msgs:[0.5,0.6)'
+             */
+	//compile project(':openCVLibrary320')
+}
+apply plugin: 'com.google.gms.google-services'
+android {
+	compileSdkVersion 27
+		defaultConfig {
+			multiDexEnabled true
+			minSdkVersion 19
+				targetSdkVersion 27
+				versionCode 1
+				versionName "1.0"
+		}
+    buildToolsVersion '27.0.3'
+}

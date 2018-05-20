@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/src/main/assets"/><source path="/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/generated/assets/shaders/debug"/></dataSet><dataSet config="debug"><source path="/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/src/debug/assets"/></dataSet></merger>

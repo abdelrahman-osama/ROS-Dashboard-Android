@@ -1,0 +1,182 @@
+{
+  "project_info": {
+    "project_number": "1010778273359",
+    "firebase_url": "https://guc-calling-app.firebaseio.com",
+    "project_id": "guc-calling-app",
+    "storage_bucket": "guc-calling-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010778273359:android:6169f06b7fd6b965",
+        "android_client_info": {
+          "package_name": "com.example.hadwa.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1010778273359-qsj2isao9rd0i5gn6u3mvf6c1mjpqk9a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hadwa.myapplication",
+            "certificate_hash": "4bee99b248c465231ee94a25abeceef04cf80a49"
+          }
+        },
+        {
+          "client_id": "1010778273359-fc1k08cno0pc387e3rsqi8f1ecj5lkjh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAFBkr9ZPatsQrL02grNkg-08SI1JrZ1M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010778273359-fc1k08cno0pc387e3rsqi8f1ecj5lkjh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010778273359:android:64b60fc7f94be2a4",
+        "android_client_info": {
+          "package_name": "com.github.ros_java.test_android.sensor_serial"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1010778273359-fc1k08cno0pc387e3rsqi8f1ecj5lkjh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAFBkr9ZPatsQrL02grNkg-08SI1JrZ1M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010778273359:android:f75ed60683bba55b",
+        "android_client_info": {
+          "package_name": "com.guc.ahmed.callingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1010778273359-1uiel9g2970l43brgsg3p2ub0hu907as.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.guc.ahmed.callingapp",
+            "certificate_hash": "4bee99b248c465231ee94a25abeceef04cf80a49"
+          }
+        },
+        {
+          "client_id": "1010778273359-2gpmitjj351dfdnocb81n9psu6u4j3n7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.guc.ahmed.callingapp",
+            "certificate_hash": "5a2fa73d4b58f608980078d32372be11ee37e997"
+          }
+        },
+        {
+          "client_id": "1010778273359-fc1k08cno0pc387e3rsqi8f1ecj5lkjh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAFBkr9ZPatsQrL02grNkg-08SI1JrZ1M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010778273359-fc1k08cno0pc387e3rsqi8f1ecj5lkjh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010778273359:android:2d425a32a26d8972",
+        "android_client_info": {
+          "package_name": "org.ollide.rosandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1010778273359-h1033p5bgehsrkdbi2vdadqcskgqsdgs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.ollide.rosandroid",
+            "certificate_hash": "4bee99b248c465231ee94a25abeceef04cf80a49"
+          }
+        },
+        {
+          "client_id": "1010778273359-fc1k08cno0pc387e3rsqi8f1ecj5lkjh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAFBkr9ZPatsQrL02grNkg-08SI1JrZ1M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010778273359-fc1k08cno0pc387e3rsqi8f1ecj5lkjh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
