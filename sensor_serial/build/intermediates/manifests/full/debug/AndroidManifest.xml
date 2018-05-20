@@ -81,7 +81,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.github.ros_java.test_android.sensor_serial.AppStart"
+            android:label="@string/title_activity_app_start"
+            android:theme="@style/AppTheme.NoActionBar" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCZ5TH2mfl26LqDq6kkVbo85gLPZ9fmaik" />
         <meta-data
             android:name="android.support.VERSION"
             android:value="26.1.0" />

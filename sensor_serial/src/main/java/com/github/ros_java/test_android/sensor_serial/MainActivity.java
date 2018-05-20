@@ -1,6 +1,7 @@
 package com.github.ros_java.test_android.sensor_serial;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -63,6 +64,10 @@ public class MainActivity extends RosActivity {
         setContentView(R.layout.main);
         FirebaseApp.initializeApp(this);
         Log.d("hadwa", FirebaseInstanceId.getInstance().getToken());
+
+        Intent intent = new Intent(MainActivity.this, AppStart.class);
+        this.startActivity(intent);
+
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
