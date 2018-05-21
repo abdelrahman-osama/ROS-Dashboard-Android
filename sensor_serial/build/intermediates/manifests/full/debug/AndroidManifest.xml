@@ -59,7 +59,8 @@
         android:debuggable="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:testOnly="true" >
+        android:testOnly="true"
+        android:theme="@style/Theme.AppCompat.Light" >
         <activity
             android:name="org.ros.android.MasterChooser"
             android:label="@string/app_name"
@@ -85,6 +86,7 @@
             android:name="com.github.ros_java.test_android.sensor_serial.AppStart"
             android:label="@string/title_activity_app_start"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.github.ros_java.test_android.sensor_serial.VisualizationActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
