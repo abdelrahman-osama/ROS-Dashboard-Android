@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:id="@+id/mapFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/BottomSheet_layout"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignBottom="@id/map"
+        android:background="@android:color/background_light"
+        android:elevation="30dp"
+        android:orientation="vertical"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+        <LinearLayout
+            android:id="@+id/bottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/WhichStop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:alpha="0.8"
+                android:text=" "
+                android:textColor="#000000"
+                android:textSize="25dp"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="10" />
+
+            <Button
+                android:id="@+id/start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="#02B3E4"
+                android:text="Start"
+                android:textColor="#FFFFFF"
+
+                />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" />
+
+        <!--<Button-->
+        <!--android:id="@+id/AddStop"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="Add Stop" />-->
+
+
+    </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/BottomSheet_layout2"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_alignBottom="@id/map"
+        android:background="@android:color/background_light"
+        android:elevation="30dp"
+        android:orientation="vertical"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+        <LinearLayout
+            android:id="@+id/bottomSheet2"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/dest1"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:text="TextView" />
+
+            <ImageView
+                android:id="@+id/dest_icon1"
+                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:src="@drawable/ic_more_horiz_black_24dp"
+                android:gravity="center_horizontal"
+                android:padding="5dip"
+                android:alpha="0.87"/>
+
+            <TextView
+                android:id="@+id/dest2"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:text="TextView" />
+
+            <ImageView
+                android:id="@+id/dest_icon2"
+                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:src="@drawable/ic_more_horiz_black_24dp"
+                android:gravity="center_horizontal"
+                android:padding="5dip"
+                android:alpha="0.87"/>
+
+            <TextView
+                android:id="@+id/dest3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:text="TextView" />
+
+
+            <ImageView
+                android:id="@+id/dest_icon3"
+                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:src="@drawable/ic_more_horiz_black_24dp"
+                android:gravity="center_horizontal"
+                android:padding="5dip"
+                android:alpha="0.87"/>
+
+            <TextView
+                android:id="@+id/dest4"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                android:text="TextView"
+                />
+
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/bottomSheet2"
+            android:layout_weight="10"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/confirm_ride"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:backgroundTint="#02B3E4"
+                android:text="Confirm"
+                android:textColor="#FFFFFF" />
+
+
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <!--Next destination card-->
+    <!--<LinearLayout-->
+        <!--android:id="@+id/BottomSheet_layout3"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="170dp"-->
+        <!--android:layout_alignBottom="@id/map"-->
+        <!--android:background="@android:color/background_light"-->
+        <!--android:elevation="30dp"-->
+        <!--android:orientation="vertical"-->
+        <!--android:visibility="visible"-->
+        <!--app:layout_behavior="android.support.design.widget.BottomSheetBehavior">-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/bottomSheet3"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="42dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:text="Destination reached"-->
+                <!--android:textAlignment="center"-->
+                <!--android:textColor="@color/Black"-->
+                <!--android:textSize="25dp"-->
+                <!--android:visibility="gone" />-->
+
+
+        <!--</LinearLayout>-->
+
+        <!--<Space-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1" />-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignBottom="@id/bottomSheet3"-->
+            <!--android:layout_weight="10"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/ndest1"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:text="TextView"-->
+                <!--android:visibility="gone" />-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/ndest_icon1"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:alpha="0.87"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:padding="5dip"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:src="@drawable/ic_more_horiz_black_24dp"-->
+                <!--android:visibility="gone" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/ndest2"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:text="TextView"-->
+                <!--android:visibility="gone" />-->
+            <!--&lt;!&ndash;<Space&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight="1" />&ndash;&gt;-->
+
+            <!--<Space-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1" />-->
+
+            <!--<Button-->
+                <!--android:id="@+id/next_ride"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_weight="4"-->
+                <!--android:backgroundTint="#02B3E4"-->
+                <!--android:text="Start"-->
+                <!--android:textColor="#FFFFFF" />-->
+
+
+        <!--</LinearLayout>-->
+
+
+    <!--</LinearLayout>-->
+
+</RelativeLayout>

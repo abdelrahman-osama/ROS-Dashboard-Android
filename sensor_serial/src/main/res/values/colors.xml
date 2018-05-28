@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="text_grey_light">#9E9E9E</color>
+    <color name="text_grey_dark">#606060</color>
+    <color name="Black">#000000</color>
+    <color name="dialSpeedColor">#800000</color>
+    <color name="dialSpeedAlertColor">#FF0000</color>
+    <color name="subDivisionCircleColor">#FF0000</color>
+    <color name="divisionCircleColor">#303F9F</color>
+    <color name="Grey">#A9A9A9</color>
+    <color name="silver">#C0C0C0</color>
+
+
+
+
+
+
+    #D3D3D3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</resources>

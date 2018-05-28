@@ -24,11 +24,15 @@ import org.ros.node.ConnectedNode;
 import org.ros.node.NodeMain;
 import org.ros.node.topic.Subscriber;
 
+import sensor_msgs.Image;
+
 /**
  * A simple {@link Subscriber} {@link NodeMain}.
  */
 public class Listener extends AbstractNodeMain {
 
+  static Subscriber<std_msgs.String> subscriber;
+  static Subscriber<sensor_msgs.Image> imageSub;
   @Override
   public GraphName getDefaultNodeName() {
     return GraphName.of("rosjava/listener");
@@ -37,12 +41,15 @@ public class Listener extends AbstractNodeMain {
   @Override
   public void onStart(ConnectedNode connectedNode) {
     final Log log = connectedNode.getLog();
-    Subscriber<std_msgs.String> subscriber = connectedNode.newSubscriber("chatter", std_msgs.String._TYPE);
-    subscriber.addMessageListener(new MessageListener<std_msgs.String>() {
-      @Override
-      public void onNewMessage(std_msgs.String message) {
-        log.info("I heard: \"" + message.getData() + "\"");
-      }
-    });
+    subscriber = connectedNode.newSubscriber("chatter", std_msgs.String._TYPE);
+    imageSub =  connectedNode.newSubscriber("camright/raw", Image._TYPE);
+//    subscriber.addMessageListener(new MessageListener<std_msgs.String>() {
+//      @Override
+//      public void onNewMessage(std_msgs.String message) {
+//        log.info("I heard: \"" + message.getData() + "\"");
+//      }
+//    });
+
   }
 }
+

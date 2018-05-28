@@ -1,10 +1,13 @@
-#Mon May 21 21:24:52 EET 2018
-path.2=classes3.dex
-path.1=classes2.dex
+#Mon May 28 13:03:27 EET 2018
+path.3=classes.dex
+path.2=classes.dex
+path.1=classes.dex
 path.0=classes.dex
+renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.2=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/0
-base.1=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/0
-base.0=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/0
+base.3=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/36
+base.2=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/39
+base.1=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/37
+base.0=/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/transforms/dexMerger/debug/38

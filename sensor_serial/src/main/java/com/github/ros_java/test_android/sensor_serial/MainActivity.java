@@ -25,8 +25,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.ros.android.RosActivity;
+import org.ros.android.view.RosImageView;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
+
+import sensor_msgs.Image;
+
+import static com.github.ros_java.test_android.sensor_serial.VisualizationActivity.videoStreamView;
+
 
 public class MainActivity extends RosActivity {
 
@@ -35,7 +41,7 @@ public class MainActivity extends RosActivity {
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private FusedLocationProviderClient mFusedLocationClient;
-
+    //static RosImageView<Image> videoStreamView;
     private boolean gps_permitted;
 
 	public MainActivity(){
@@ -54,6 +60,21 @@ public class MainActivity extends RosActivity {
 
         n.execute(publisher, nodeConfiguration);
 
+        Talker talker = new Talker();
+        //NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname(), getMasterUri());
+        nodeConfiguration.setNodeName("talker");
+        n.execute(talker, nodeConfiguration);
+
+        Listener listener = new Listener();
+        nodeConfiguration.setNodeName("listener");
+        n.execute(listener, nodeConfiguration);
+
+//        videoStreamView = (RosImageView<Image>) findViewById(R.id.visualizationImage);
+//        nodeConfiguration.setNodeName("camright/raw");
+//        n.execute(videoStreamView, nodeConfiguration);
+
+        Intent intent = new Intent(MainActivity.this, AppStart.class);
+        this.startActivity(intent);
 
     }
     /** Called when the activity is first created. */
@@ -63,11 +84,7 @@ public class MainActivity extends RosActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         FirebaseApp.initializeApp(this);
-        Log.d("hadwa", FirebaseInstanceId.getInstance().getToken());
-
-        Intent intent = new Intent(MainActivity.this, AppStart.class);
-        this.startActivity(intent);
-
+        //Log.d("hadwa", FirebaseInstanceId.getInstance().getToken());
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
