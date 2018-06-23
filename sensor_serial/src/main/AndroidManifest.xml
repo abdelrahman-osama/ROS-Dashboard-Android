@@ -53,6 +53,18 @@
             android:label="@string/title_activity_app_start"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
+
+        <service android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity android:name=".VisualizationActivity"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"

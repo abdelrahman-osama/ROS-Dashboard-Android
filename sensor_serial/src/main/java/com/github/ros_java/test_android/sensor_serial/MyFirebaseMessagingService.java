@@ -60,7 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void handleNow(final RemoteMessage remoteMessage) {
         //Toast.makeText(this, remoteMessage.getNotification().getBody(), Toast.LENGTH_SHORT).show();
-        Log.d("hadwaa", "I came here");
+       // Log.d("hadwaa", "I came here");
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             public void run() {
@@ -70,6 +70,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        Intent intent = new Intent("FcmData");
 //        intent.putExtra("EVENT", "ay 7aga");
 //        broadcaster.sendBroadcast(intent);
+
         if (remoteMessage.getData().size() > 0) {
             Map<String, String> data = remoteMessage.getData();
             Intent intent = new Intent("FcmData");

@@ -16,24 +16,34 @@
         <!--android:layout_alignParentTop="true"-->
         <!--app:srcCompat="@drawable/bg" />-->
 
+    <!--<org.ros.android.view.visualization.VisualizationView-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:id="@+id/lidarView">-->
+    <!--</org.ros.android.view.visualization.VisualizationView>-->
+
     <org.ros.android.view.RosImageView
         android:id="@+id/visualizationImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/bg" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:cropToPadding="true"
+        android:scaleType="fitXY"
+        android:src="@null" />
 
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="345dp"
-        android:layout_marginTop="47dp"
+        android:layout_marginEnd="330dp"
+        android:layout_marginTop="115dp"
         android:text="ANGLE"
+        android:shadowColor="@color/Black"
+        android:shadowRadius="2"
         android:textColor="@color/colorPrimary"
         android:textSize="25dp" />
 
@@ -49,34 +59,71 @@
     <fragment
         android:id="@+id/map1"
         android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="260dp"
-        android:layout_height="248dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="43dp"
-        android:layout_marginTop="23dp"
+        android:layout_width="280dp"
+        android:layout_height="250dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="34dp"
+        android:layout_marginStart="34dp"
         android:layout_weight="3" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/degree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="330dp"
-        android:layout_marginTop="94dp"
+        android:layout_marginEnd="302dp"
+        android:layout_marginTop="14dp"
         android:text="90°"
         android:textColor="@color/colorPrimary"
+        android:shadowColor="@color/Black"
+        android:shadowRadius="2"
+        android:elevation="4dp"
         android:textSize="80dp" />
+
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/degree"
+        android:layout_marginEnd="110dp"
+        android:text="20"
+        android:elevation="4dp"
+        android:textColor="@color/colorPrimary"
+        android:shadowColor="@color/Black"
+        android:shadowRadius="2"
+        android:textSize="80dp" />
+
+
+    <TextView
+        android:id="@+id/unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="110dp"
+        android:layout_marginTop="115dp"
+        android:text="KM/HR"
+        android:elevation="4dp"
+        android:textColor="@color/colorPrimary"
+        android:shadowColor="@color/Black"
+        android:shadowRadius="2"
+        android:textSize="25dp" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView2"
-        android:layout_marginStart="294dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="63dp"
+        android:layout_marginTop="35dp"
         android:text="ONLINE – IN RIDE"
+        android:shadowColor="@color/Black"
+        android:shadowRadius="2"
         android:textColor="@color/colorPrimary"
         android:textSize="25dp" />
 
@@ -89,41 +136,65 @@
         android:layout_marginStart="56dp" />
 -->
 
-    <in.unicodelabs.kdgaugeview.KdGaugeView
-        android:id="@+id/speedMeter"
-        android:layout_width="248dp"
-        android:layout_height="248dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/map1"
-        android:layout_gravity="center"
-        android:layout_marginStart="12dp"
-        app:animationTime="1000"
-        app:dialActiveColor="@color/Grey"
-        app:dialInactiveColor="@color/silver"
-        app:dialSpeedAlertColor="@color/dialSpeedAlertColor"
-        app:dialSpeedColor="@color/dialSpeedColor"
-        app:divisionCircleColor="@color/silver"
-        app:maxSpeed="200"
-        app:speedDialRingInnerPadding="10dp"
-        app:speedLimitTextColor="@color/colorPrimary"
-        app:speedTextColor="@color/colorPrimary"
-        app:speedTextSize="80dp"
-        app:speed_limit="20"
-        app:subDivisionCircleColor="@color/Grey"
-        app:unitOfMeasurementTextColor="@color/colorPrimary"
-        app:unitOfMeasurementTextSize="25dp" />
+    <!--<in.unicodelabs.kdgaugeview.KdGaugeView-->
+        <!--android:id="@+id/speedMeter"-->
+        <!--android:layout_width="248dp"-->
+        <!--android:layout_height="248dp"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_alignTop="@+id/map1"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginStart="12dp"-->
+        <!--app:animationTime="1000"-->
+        <!--app:dialActiveColor="@color/Grey"-->
+        <!--app:dialInactiveColor="@color/silver"-->
+        <!--app:dialSpeedAlertColor="@color/dialSpeedAlertColor"-->
+        <!--app:dialSpeedColor="@color/dialSpeedColor"-->
+        <!--app:divisionCircleColor="@color/silver"-->
+        <!--app:maxSpeed="200"-->
+        <!--app:speedDialRingInnerPadding="10dp"-->
+        <!--app:speedLimitTextColor="@color/colorPrimary"-->
+        <!--app:speedTextColor="@color/colorPrimary"-->
+        <!--app:speedTextSize="80dp"-->
+        <!--app:speed_limit="20"-->
+        <!--app:subDivisionCircleColor="@color/Grey"-->
+        <!--app:unitOfMeasurementTextColor="@color/colorPrimary"-->
+        <!--app:unitOfMeasurementTextSize="25dp" />-->
 
-    <Button
-        android:id="@+id/endButton"
+    <ImageButton
+        android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/unit"
+        android:layout_marginBottom="58dp"
+        android:background="@null"
+        android:elevation="10dp"
+        android:src="@drawable/ic_cancel" />
+
+    <ImageButton
+        android:id="@+id/modifyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="48dp"
-        android:layout_marginEnd="59dp"
-        android:background="#02B3E4"
-        android:text="END RIDE"
-        android:textColor="@color/colorPrimary" />
+        android:layout_alignTop="@+id/cancelButton"
+        android:layout_marginEnd="252dp"
+        android:background="@null"
+        android:elevation="10dp"
+        android:src="@drawable/ic_edit"
+        />
+
+    <ImageButton
+        android:id="@+id/arriveDestination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/cancelButton"
+        android:layout_marginEnd="400dp"
+        android:background="@null"
+        android:elevation="10dp"
+        android:src="@drawable/ic_edit" />
+
+
 
 
 </RelativeLayout>

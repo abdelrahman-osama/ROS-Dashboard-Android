@@ -84,10 +84,8 @@ import java.util.List;
 
 //import std_msgs.String;
 
-import sensor_msgs.Image;
 import std_msgs.String;
 
-import static com.github.ros_java.test_android.sensor_serial.Listener.imageSub;
 import static com.github.ros_java.test_android.sensor_serial.Listener.subscriber;
 
 
@@ -108,6 +106,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     private LatLng Dest1 = new LatLng(29.988428, 31.4389311);
     static HashMap<java.lang.String, LatLng> pinLocations;
     static ArrayList<Marker> chosenMarkerArrayList;
+    static ArrayList<Marker> AllMarkersArrayList;
+
     static TextView markerText;
     static View markerIcon;
     static java.lang.String appState;
@@ -117,7 +117,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     private static final LatLngBounds GUC_BOUNDS = new LatLngBounds(new LatLng(29.9842014, 31.4387794),
             new LatLng(29.9899635, 31.4445531));
 
-    Trip createdTrip;
+    static Trip createdTrip;
+    static Trip tripToBe;
     static ImageView markerView;
     static TextView BottomSheetText;
     private View view;
@@ -134,6 +135,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     static java.lang.String tripState;
     static Button confirmRide;
     static java.lang.String speedValue;
+     static Button edit;
+    private java.lang.String tripUrl;
+
 
     public MapsFragment() {
         // Required empty public constructor
@@ -151,13 +155,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         appState = "initialState";
         CheckInternet();
 //        getTripFromServer();
-        //polylines = new ArrayList<>();
+        AllMarkersArrayList = new ArrayList<Marker>();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         //NewText = (TextView)findViewById(R.id.WhichStop);
 
         tripState = "localTrip";
         requestTrip = new RequestTrip();
         createdTrip = new Trip();
+        tripToBe = new Trip();
 
 
         mLocationCallback = new LocationCallback() {
@@ -174,8 +179,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
 
 
-//        BottomSheetText.setText("Pick a drop-off location");
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //BottomSheetText.setText("Pick a drop-off location");
+        //Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -210,7 +215,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             @Override
             public void onNewMessage(std_msgs.String s) {
                 speedValue = s.getData();
-                Log.d("listener-log","I heard: \"" + s.getData() + "\"");
+               // Log.d("listener-log","I heard: \"" + s.getData() + "\"");
             }
         });
 
@@ -220,6 +225,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
     }
 
+
+
+
+
+
     @SuppressLint("RestrictedApi")
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
@@ -228,6 +238,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -235,46 +247,47 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             java.lang.String status = bundle.getString("EVENT");
             java.lang.String carID = bundle.getString("CAR_ID");
             java.lang.String tripID=bundle.getString("TRIP_ID");
-            Log.d("eh ya status da?", status);
+           // Log.d("Trip-Status-FCM", status);
             switch (status) {
 
-                case "NEW":
+                case "CAR_ON_WAY":
                     getTripFromServer();
                     break;
                 case "CANCEL":
                     onCancel();
                     break;
                 case "END":
+                    onReset();
                     break;
-                case "START":
-                    //startTripFromServer();
-                    break;
-                case "MODIFY":
+                case "CHANGE_DESTINATION":
+                    modifyFromServer();
                     break;
 
             }
         }
     };
 
-    private BroadcastReceiver mMessageReceiver2 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle bundle = intent.getExtras();
-            java.lang.String status = bundle.getString("EVENT");
-            if(status=="ResetAll") {
+    public void modifyFromServer(){
+        getTripFromServer();
 
-                Markers.clear();
-                DestinationCount=0;
-                Log.d("dodo", "size:" + chosenMarkerArrayList.size());
-                for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
-                    Log.d("dodo", chosenMarkerArrayList.get(i).getTitle().toString());
-                    markerView.setImageResource(R.drawable.ic_marker_black);
-                    markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
-                    chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
-                    //chosenMarkerArrayList.remove(i);
-                    Log.d("dodo", "size gowa:" + chosenMarkerArrayList.size());
-                }
-                chosenMarkerArrayList.clear();
+    }
+
+    public void onReset(){
+        tripState = "localTrip";
+        Markers.clear();
+        tripToBe = new Trip();
+        DestinationCount=0;
+        recyclerView.getAdapter().notifyDataSetChanged();
+       // Log.d("dodo", "size:" + chosenMarkerArrayList.size());
+        for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
+          //  Log.d("dodo", chosenMarkerArrayList.get(i).getTitle());
+            markerView.setImageResource(R.drawable.ic_marker_black);
+            markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+            chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+            //chosenMarkerArrayList.remove(i);
+          //  Log.d("dodo", "size gowa:" + chosenMarkerArrayList.size());
+        }
+        chosenMarkerArrayList.clear();
 //                if(chosenMarkerArrayList.get(0) != null){
 //                    markerView.setImageResource(R.drawable.ic_marker_black);
 //                    markerText.setText(MapsFragment.chosenMarkerArrayList.get(0).getTitle());
@@ -282,18 +295,47 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 //                    chosenMarkerArrayList.remove(0);
 //                }
 
-                BottomSheetText.setText("Pick a drop-off location");
-                BottomSheetText.setAlpha((float) 0.54);
-                //notifyItemRemoved(holder.getAdapterPosition());
-                appState = "initialState";
-                removePolylines();
-                bottomSheet.setVisibility(View.VISIBLE);
-                bottomSheet2.setVisibility(View.GONE);
+        BottomSheetText.setText("Pick a drop-off location");
+        BottomSheetText.setAlpha((float) 0.54);
+        //notifyItemRemoved(holder.getAdapterPosition());
+        appState = "initialState";
+        removePolylines();
+        bottomSheet.setVisibility(View.VISIBLE);
+        bottomSheet2.setVisibility(View.GONE);
+
+    }
+
+    private BroadcastReceiver mMessageReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            java.lang.String status = bundle.getString("EVENT");
+            if(status.equals("ResetAll")) {
+            onReset();
+            }
+            if(status.equals("Modify")) {
+              onModify();
+            }
+            if(status.equals("DestinationArrived")){
+
+                onDestinationArrived();
+
+            }
+            if(status.equals("FinalDestinationArrived")){
+
+                onFinalDestinationArrived();
+
             }
             }
+
 
 
     };
+
+    private void onFinalDestinationArrived() {
+        onReset();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -405,6 +447,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         }
 
 
+
+
 //        pinLocations.put("Admission Building", new LatLng(29.988428, 31.4389311));
 //        pinLocations.put("B Building", new LatLng(29.9859256, 31.4386074));
 //        pinLocations.put("C Building", new LatLng(29.9859929, 31.4392198));
@@ -414,7 +458,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 //        mMap.addMarker(new MarkerOptions().position(Admission).title("Admission Building"));
 //        mMap.addMarker(new MarkerOptions().position(B).title("B Building"));
 //        mMap.addMarker(new MarkerOptions().position(C).title("C Building"));
-        Log.d("osamaa", java.lang.String.valueOf(pinLocations.size()));
+       // Log.d("osamaa", java.lang.String.valueOf(pinLocations.size()));
 //        for(String key : pinLocations.keySet()){
 //            markerText=markerIcon.findViewById(R.id.Markertxt);
 //            markerText.setText(key);
@@ -467,7 +511,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         Button Start = (Button) getActivity().findViewById(R.id.start);
         Start.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                edit.setVisibility(View.GONE);
                 if (mLastLocation != null) {
                     CheckInternet();
                     if (isInternetAvailable()) {
@@ -493,7 +537,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
                                         Trip modifiedTrip = new Trip();
                                         modifiedTrip.setDestinations(newDestinations);
-                                        java.lang.String url = "https://sdc-trip-car-management.herokuapp.com/car/trip/change/tablet";
+                                        java.lang.String url = "https://sdc-api-gateway.herokuapp.com/car/trip/change/tablet/hadwa";
                                         java.lang.String str = gson.toJson(modifiedTrip);
                                         JSONObject trip = new JSONObject();
                                         try {
@@ -525,62 +569,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                     }
                                     appState = "routeReady";
                                     GetRoutToMarker(pinLocations.get(Markers.get(0)));
-                                    bottomSheet = (LinearLayout) getActivity().findViewById(R.id.BottomSheet_layout);
-                                    bottomSheet2 = (LinearLayout) getActivity().findViewById(R.id.BottomSheet_layout2);
-
-                                    TextView dest1 = (TextView) getActivity().findViewById(R.id.dest1);
-                                    TextView dest2 = (TextView) getActivity().findViewById(R.id.dest2);
-                                    TextView dest3 = (TextView) getActivity().findViewById(R.id.dest3);
-                                    TextView dest4 = (TextView) getActivity().findViewById(R.id.dest4);
-
-                                    ImageView destIcon1 = (ImageView) getActivity().findViewById(R.id.dest_icon1);
-                                    ImageView destIcon2 = (ImageView) getActivity().findViewById(R.id.dest_icon2);
-                                    ImageView destIcon3 = (ImageView) getActivity().findViewById(R.id.dest_icon3);
-
-                                    dest1.setVisibility(View.GONE);
-                                    dest2.setVisibility(View.GONE);
-                                    dest3.setVisibility(View.GONE);
-                                    dest4.setVisibility(View.GONE);
-                                    destIcon1.setVisibility(View.GONE);
-                                    destIcon2.setVisibility(View.GONE);
-                                    destIcon3.setVisibility(View.GONE);
-
-                                    if (Markers.size() == 1) {
-                                        dest1.setText(Markers.get(0));
-                                        dest1.setVisibility(View.VISIBLE);
-                                    }
-                                    if (Markers.size() == 2) {
-                                        dest1.setText(Markers.get(0));
-                                        dest2.setText(Markers.get(1));
-                                        dest1.setVisibility(View.VISIBLE);
-                                        dest2.setVisibility(View.VISIBLE);
-                                        destIcon1.setVisibility(View.VISIBLE);
-                                    }
-                                    if (Markers.size() == 3) {
-                                        dest1.setText(Markers.get(0));
-                                        dest2.setText(Markers.get(1));
-                                        dest3.setText(Markers.get(2));
-                                        dest1.setVisibility(View.VISIBLE);
-                                        dest2.setVisibility(View.VISIBLE);
-                                        dest3.setVisibility(View.VISIBLE);
-                                        destIcon1.setVisibility(View.VISIBLE);
-                                        destIcon2.setVisibility(View.VISIBLE);
-                                    }
-                                    if (Markers.size() == 4) {
-                                        dest1.setText(Markers.get(0));
-                                        dest2.setText(Markers.get(1));
-                                        dest3.setText(Markers.get(2));
-                                        dest4.setText(Markers.get(3));
-                                        dest1.setVisibility(View.VISIBLE);
-                                        dest2.setVisibility(View.VISIBLE);
-                                        dest3.setVisibility(View.VISIBLE);
-                                        dest4.setVisibility(View.VISIBLE);
-                                        destIcon1.setVisibility(View.VISIBLE);
-                                        destIcon2.setVisibility(View.VISIBLE);
-                                        destIcon3.setVisibility(View.VISIBLE);
-                                    }
-
-
+                                    setBottomSheets();
                                     bottomSheet.setVisibility(View.GONE);
                                     bottomSheet2.setVisibility(View.VISIBLE);
 
@@ -607,31 +596,30 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             @Override
             public void onClick(View v) {
                 confirmRide.setClickable(false);
-                if(tripState == "localTrip") {
-                    createTrip();
-
-//                    Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putParcelable("destination", pinLocations.get(Markers.get(0)));
-//                    visualizationIntent.putExtra("bundle", bundle);
-//                    //visualizationIntent.putExtra("destination", pinLocations.get(Markers.get(0)));
-//                    startActivity(visualizationIntent);
-//                    getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
-                }else{
                 Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("destination", pinLocations.get(Markers.get(0)));
-                visualizationIntent.putExtra("bundle", bundle);
-                startActivity(visualizationIntent);
-                getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+                switch (tripState){
+                    case "localTrip": createTrip();
+                        break;
+                    case "modify":
+                        confirmModify();
+                        break;
+                    case "remoteTrip":
+                        startActivity(visualizationIntent);
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+                        break;
+                    case "DestinationArrived":
+                        appState="DestinationArrived";
+                        startActivity(visualizationIntent);
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+                        break;
                 }
-//                Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putParcelable("destination", pinLocations.get(Markers.get(0)));
-//                visualizationIntent.putExtra("bundle", bundle);
-//                //visualizationIntent.putExtra("destination", pinLocations.get(Markers.get(0)));
-//                startActivity(visualizationIntent);
-//                getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+            }
+        });
+        edit = (Button) getActivity().findViewById(R.id.edit);
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onModify2();
             }
         });
 
@@ -639,6 +627,51 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         startLocationUpdates();
 
 
+    }
+
+    public void setBottomSheets(){
+        bottomSheet = (LinearLayout) view.findViewById(R.id.BottomSheet_layout);
+        bottomSheet2 = (LinearLayout) view.findViewById(R.id.BottomSheet_layout2);
+
+        TextView dest1 = (TextView) view.findViewById(R.id.dest1);
+        TextView dest2 = (TextView) view.findViewById(R.id.dest2);
+        TextView dest3 = (TextView) view.findViewById(R.id.dest3);
+        TextView dest4 = (TextView) view.findViewById(R.id.dest4);
+
+        ImageView destIcon1 = (ImageView) view.findViewById(R.id.dest_icon1);
+        ImageView destIcon2 = (ImageView) view.findViewById(R.id.dest_icon2);
+        ImageView destIcon3 = (ImageView) view.findViewById(R.id.dest_icon3);
+
+        dest1.setVisibility(View.GONE);
+        dest2.setVisibility(View.GONE);
+        dest3.setVisibility(View.GONE);
+        dest4.setVisibility(View.GONE);
+        destIcon1.setVisibility(View.GONE);
+        destIcon2.setVisibility(View.GONE);
+        destIcon3.setVisibility(View.GONE);
+
+
+        if (Markers.size() == 1) {
+            dest1.setText(Markers.get(0));
+            dest1.setVisibility(View.VISIBLE);
+        }
+        if (Markers.size() == 2) {
+            dest1.setText(Markers.get(0));
+            dest2.setText(Markers.get(1));
+            dest1.setVisibility(View.VISIBLE);
+            dest2.setVisibility(View.VISIBLE);
+            destIcon1.setVisibility(View.VISIBLE);
+        }
+        if (Markers.size() == 3) {
+            dest1.setText(Markers.get(0));
+            dest2.setText(Markers.get(1));
+            dest3.setText(Markers.get(2));
+            dest1.setVisibility(View.VISIBLE);
+            dest2.setVisibility(View.VISIBLE);
+            dest3.setVisibility(View.VISIBLE);
+            destIcon1.setVisibility(View.VISIBLE);
+            destIcon2.setVisibility(View.VISIBLE);
+        }
     }
 
     public static Bitmap createDrawableFromView(Context context, View view) {
@@ -664,6 +697,127 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                 .transportMode(TransportMode.DRIVING)
                 .execute(this);
 
+    }
+
+    public void onModify2(){
+        tripState = "modify";
+        appState = "modify";
+        removePolylines();
+        recyclerView.getAdapter().notifyDataSetChanged();
+        bottomSheet.setVisibility(View.VISIBLE);
+        bottomSheet2.setVisibility(View.GONE);
+
+//        for (int i = 0; i< tripToBe.getDestinations().size(); i++){
+//            if(!tripToBe.getDestinations().get(i).isArrived())
+//                chosenMarkerArrayList.add(GetMarkersFromLatlng(tripToBe.getDestinations().get(i).getLocation()));
+//        }
+//        for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
+//            markerView.setImageResource(R.drawable.ic_marker_blue);
+//            markerText.setText(chosenMarkerArrayList.get(i).getTitle());
+//            Log.d("Marker Titles", chosenMarkerArrayList.get(i).getTitle() + Markers.size());
+//            chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+//            Log.d("Marker Titles2", MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+//            Markers.add(chosenMarkerArrayList.get(i).getTitle());
+//        }
+    }
+    public void onModify(){
+//        Log.d("FirstMarker",Markers.get(0));
+
+        Markers.clear();
+        recyclerView.getAdapter().notifyDataSetChanged();
+
+        tripState = "modify";
+//        for (int i = 0; i<Markers.size(); i++){
+//            Markers.remove(i);
+//        }
+       // Log.d("FirstMarker",Markers.get(0));
+        Log.d("FirstMarker",Markers.size()+"");
+//        recyclerView.notifyAll();
+        removePolylines();
+        bottomSheet.setVisibility(View.VISIBLE);
+        bottomSheet2.setVisibility(View.GONE);
+        //confirmRide.setClickable(true);
+        for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
+            markerView.setImageResource(R.drawable.ic_marker_black);
+            markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+            chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+
+        }
+        chosenMarkerArrayList.clear();
+
+
+        appState = "modify";
+        for (int i = 0; i< tripToBe.getDestinations().size(); i++){
+            if(!tripToBe.getDestinations().get(i).isArrived())
+                chosenMarkerArrayList.add(GetMarkersFromLatlng(tripToBe.getDestinations().get(i).getLocation()));
+        }
+        for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
+            markerView.setImageResource(R.drawable.ic_marker_blue);
+            markerText.setText(chosenMarkerArrayList.get(i).getTitle());
+            Log.d("Marker Titles", chosenMarkerArrayList.get(i).getTitle() + Markers.size());
+            chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+            Log.d("Marker Titles2", MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+            Markers.add(chosenMarkerArrayList.get(i).getTitle());
+        }
+    }
+
+    public void onDestinationArrived(){
+        Markers.clear();
+        removePolylines();
+        edit.setVisibility(View.VISIBLE);
+        //confirmRide.setClickable(true);
+        for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
+            if(tripToBe.getDestinations().get(i).isArrived()) {
+                //DestinationCount--;
+                markerView.setImageResource(R.drawable.ic_marker_black);
+                markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+                chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+            }
+        }
+        for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
+            Markers.add(chosenMarkerArrayList.get(i).getTitle());
+            if(!tripToBe.getDestinations().get(i).isArrived()) {
+                markerView.setImageResource(R.drawable.ic_marker_blue);
+                markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+                chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+                Log.d("FirstMarker1",""+tripToBe.getDestinations().get(i).getLocation());
+                Log.d("FiratMarker2",""+ chosenMarkerArrayList.get(i));
+//                Markers.add(chosenMarkerArrayList.get(i).getTitle());
+
+            }
+        }
+        GetRoutToMarker(pinLocations.get(Markers.get(0)));
+
+        //chosenMarkerArrayList.clear();
+        setBottomSheets();
+        bottomSheet.setVisibility(View.GONE);
+        bottomSheet2.setVisibility(View.VISIBLE);
+        tripState = "DestinationArrived";
+
+
+
+    }
+
+    public Marker GetMarkersFromLatlng(LatLng latlng){
+        for (int i =0 ; i<AllMarkersArrayList.size();i++){
+          //  Log.d("getMarkerFromLatLng", AllMarkersArrayList.get(i).getPosition().toString());
+           // Log.d("getMarkerFromLatLng", "latln"+latlng.toString());
+
+            if(AllMarkersArrayList.get(i).getPosition().equals(latlng))
+            {
+                Log.d("getMarkerFromLatLng", "did I come here?");
+                return AllMarkersArrayList.get(i);
+            }
+            Log.d("getMarkerFromLatLng", "did I come here tayb??");
+
+        }
+        return null;
+    }
+
+    public boolean Arrived(int i){
+
+
+        return tripToBe.getDestinations().get(i).isArrived();
     }
 
 
@@ -710,11 +864,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
     @Override
     public void onDirectionSuccess(Direction direction, java.lang.String rawBody) {
-        Log.d("Polylines", direction.getStatus());
+       // Log.d("Polylines", direction.getStatus());
 
         if (direction.isOK()) {
-            Log.d("Polylines", "eh b2aa");
-            Log.d("Polylines", java.lang.String.valueOf(direction.getRouteList().get(0)));
+        //    Log.d("Polylines", "eh b2aa");
+         //   Log.d("Polylines", java.lang.String.valueOf(direction.getRouteList().get(0)));
             Route route = direction.getRouteList().get(0);
             ArrayList<LatLng> directionPositionList = route.getLegList().get(0).getDirectionPoint();
             //mMap.addPolyline(DirectionConverter.createPolyline(getContext(), directionPositionList, 4, Color.BLACK));
@@ -817,15 +971,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
 
         //Log.d("markercb", "ana geet hena");
-        if (appState == "initialState") {
+        if (appState == "initialState" || appState == "modify") {
             if (!Markers.contains(marker.getTitle())) {
-                if (DestinationCount < 4) {
+                if (DestinationCount < 3) {
                     Drawable drawable = null;
                     Markers.add(marker.getTitle());
                     chosenMarkerArrayList.add(marker);
-                    Log.d("brownies", java.lang.String.valueOf(Markers.size()));
+                  //  Log.d("brownies", java.lang.String.valueOf(Markers.size()));
                     //GetRoutToMarker(marker.getPosition());
-
                     markerView = (ImageView) markerIcon.findViewById(R.id.icon1);
                     markerView.setImageResource(R.drawable.ic_marker_blue);
                     markerText.setText(marker.getTitle());
@@ -864,8 +1017,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     }
 
     private void getMarkersFromServer() {
-        java.lang.String pinUrl = "https://sdc-trip-car-management.herokuapp.com/guc/pins";
-        Log.d("osamaa", "I entered1");
+        java.lang.String pinUrl = "https://sdc-api-gateway.herokuapp.com/guc/pins";
+       // Log.d("osamaa", "I entered1");
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
                 (Method.GET, pinUrl, null, new Response.Listener<JSONArray>() {
 
@@ -875,8 +1028,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                         for (int i = 0; i < response.length(); i++) {
                             try {
                                 JSONObject responseObject = response.getJSONObject(i);
-                                Log.d("osamaa", responseObject.get("name").toString());
-                                Log.d("osamaa", java.lang.String.valueOf(new LatLng(responseObject.getJSONObject("latLng").getDouble("latitude"), responseObject.getJSONObject("latLng").getDouble("longitude"))));
+                            //    Log.d("osamaa", responseObject.get("name").toString());
+                             //   Log.d("osamaa", java.lang.String.valueOf(new LatLng(responseObject.getJSONObject("latLng").getDouble("latitude"), responseObject.getJSONObject("latLng").getDouble("longitude"))));
                                 pinLocations.put(responseObject.getString("name"), new LatLng(responseObject.getJSONObject("latLng").getDouble("latitude"), responseObject.getJSONObject("latLng").getDouble("longitude")));
                                 // Log.d("blaaa", pinLocations.toString() );
 
@@ -888,7 +1041,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                         for (java.lang.String key : pinLocations.keySet()) {
                             markerText = markerIcon.findViewById(R.id.Markertxt);
                             markerText.setText(key);
-                            mMap.addMarker(new MarkerOptions().position(pinLocations.get(key)).title(key).icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(getContext(), markerIcon))));
+
+                            AllMarkersArrayList.add( mMap.addMarker(new MarkerOptions().position(pinLocations.get(key)).title(key).icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(getContext(), markerIcon)))));
                         }
 //                        drawPins(gucPlaces);
 //                        MainActivity.gucPlaces = gucPlaces;
@@ -908,7 +1062,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     public static java.lang.String getGucPlaceByLatLng(LatLng latLng){
         for(Object place : MapsFragment.pinLocations.keySet()){
             if(MapsFragment.pinLocations.get(place).equals(latLng)){
-                    Log.d("mo7eyy",place.toString());
+                //    Log.d("mo7eyy",place.toString());
                 return (java.lang.String) place;
 
             }
@@ -922,22 +1076,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     // TODO: Send to server a POST request when I reach pickup location
     private void getTripFromServer() {
 
-        //TODO:Clear markers when I finish a trip.
         Markers.clear();
-        tripState = "remoteState";
-        java.lang.String tripUrl = "https://sdc-trip-car-management.herokuapp.com/car/find/hadwa";
+
+        tripState = "remoteTrip";
+        java.lang.String tripUrl = "https://sdc-api-gateway.herokuapp.com/car/find/hadwa";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, tripUrl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 JSONObject obj = response;
                 Car car = gson.fromJson(obj.toString(), Car.class);
                 if(car.getCurrentTrip()!=null){
-                    Trip trip = car.getCurrentTrip();
+                     tripToBe = car.getCurrentTrip();
 
-                    for(int i =0; i<trip.getDestinations().size(); i++){
-                        TripDestination d= trip.getDestinations().get(i);
+                    for(int i = 0; i< tripToBe.getDestinations().size(); i++){
+                        TripDestination d= tripToBe.getDestinations().get(i);
                         Markers.add(getGucPlaceByLatLng(d.getLocation()));
                     }
+                    DestinationCount = Markers.size();
+
 
                     if (mLastLocation != null) {
                         CheckInternet();
@@ -1048,11 +1204,85 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         return null;
     }
 
+    public void confirmModify(){
+        final java.lang.String modifyTripUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/change/tablet/hadwa";
+        Trip modifyTrip= new Trip();
+        List<TripDestination> newDestinations = new ArrayList<>();
+        //ArrayList<LatLng> destinationList = new ArrayList<LatLng>();
+        for(int i =0; i<chosenMarkerArrayList.size(); i++){
+            newDestinations.add(new TripDestination(chosenMarkerArrayList.get(i).getPosition()));
+        }
+        for (int i=0 ; i < tripToBe.getDestinations().size() ; i++){
+            if(tripToBe.getDestinations().get(i).isArrived()){
+                newDestinations.get(i).setArrived(true);
+            }
+        }
+        //TODO this needs to be in start button
+
+            int tripsLeft=0;
+        for (int i=0 ; i < newDestinations.size() ; i++){
+            if(!newDestinations.get(i).isArrived()){
+                tripsLeft++;
+            }
+        }
+        if(tripsLeft==0){
+            confirmRide.setClickable(true);  //I added this to make confirmRide clickable if the ride was cancelled because of a modification.
+            onReset();
+            tripUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/arrive/final/hadwa";
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, tripUrl, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                }
+            }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // TODO: Handle error
+
+                }
+            });
+            // Access the RequestQueue through your singleton class.
+            MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+        }else {
+            tripToBe.setDestinations(newDestinations);
+            java.lang.String str = gson.toJson(tripToBe);
+            JSONObject trip = new JSONObject();
+
+            try {
+                trip = new JSONObject(str);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest tripRequest = new JsonObjectRequest(Method.POST, modifyTripUrl, trip, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    //createdTrip = gson.fromJson(response.toString(),Trip.class);
+                    //tripToBe = createdTrip;
+//                Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
+//                startActivity(visualizationIntent);
+//                getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("ErrorModify", java.lang.String.valueOf(error.networkResponse.statusCode));
+                }
+            });
+
+            MySingleton.getInstance(getContext()).addToRequestQueue(tripRequest);
+
+            Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
+            startActivity(visualizationIntent);
+            getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+        }
+
+    }
+
 
 
 
     public void createTrip(){
-        java.lang.String createTripUrl = "https://sdc-trip-car-management.herokuapp.com/car/create/trip";
+        final java.lang.String createTripUrl = "https://sdc-api-gateway.herokuapp.com/car/create/trip";
         if(mLastLocation!=null) {
             requestTrip.setPickupLocation(mLastLocation);
         }
@@ -1063,7 +1293,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         requestTrip.setDestinations(destinationList);
         requestTrip.setCarID("hadwa");
         //requestTrip.setTabletFcmToken(MyFirebaseInstanceIDService.getToken());
-        Log.d("trip-server-car", requestTrip.getCarID());
+      //  Log.d("trip-server-car", requestTrip.getCarID());
         java.lang.String str = gson.toJson(Trip.toTrip(requestTrip));
         JSONObject trip = new JSONObject();
 
@@ -1072,15 +1302,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("trip-server", trip.toString());
+      //  Log.d("trip-server", trip.toString());
         JsonObjectRequest tripRequest = new JsonObjectRequest(Method.POST, createTripUrl, trip, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 createdTrip = gson.fromJson(response.toString(),Trip.class);
+                tripToBe = createdTrip;
                 Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("destination", pinLocations.get(Markers.get(0)));
-                visualizationIntent.putExtra("bundle", bundle);
+                //Bundle bundle = new Bundle();
+                //bundle.putParcelable("destination", (Parcelable) createdTrip);
+                //visualizationIntent.putExtra("destination", createdTrip);
+                //visualizationIntent.putExtra("bundle", bundle);
                 //visualizationIntent.putExtra("destination", pinLocations.get(Markers.get(0)));
                 startActivity(visualizationIntent);
                 getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
@@ -1097,19 +1329,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
     public void startTripFromServer(){
         Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("destination", pinLocations.get(Markers.get(0)));
-        visualizationIntent.putExtra("bundle", bundle);
+        //Bundle bundle = new Bundle();
+        //bundle.putParcelable("trip", (Parcelable) trip);
+        //visualizationIntent.putExtra("bundle", bundle);
         //visualizationIntent.putExtra("destination", pinLocations.get(Markers.get(0)));
         startActivity(visualizationIntent);
         getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
     }
     public void onCancel(){
-        Markers.clear();
-        appState = "initialState";
-        removePolylines();
-        bottomSheet.setVisibility(View.VISIBLE);
-        bottomSheet2.setVisibility(View.GONE);
+
+       onReset();
 
     }
 
@@ -1119,7 +1348,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         car.setcarID("hadwa");
         car.setTabletFcmToken(MyFirebaseInstanceIDService.getToken());
 
-        java.lang.String newTokenUrl = "https://sdc-trip-car-management.herokuapp.com/car/admin/token/tablet";
+        java.lang.String newTokenUrl = "https://sdc-api-gateway.herokuapp.com/car/admin/token/tablet";
         java.lang.String str = gson.toJson(car);
         JSONObject carJSON = new JSONObject();
         try {

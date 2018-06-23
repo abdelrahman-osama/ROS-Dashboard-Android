@@ -32,7 +32,7 @@ import sensor_msgs.Image;
 public class Listener extends AbstractNodeMain {
 
   static Subscriber<std_msgs.String> subscriber;
-  static Subscriber<sensor_msgs.Image> imageSub;
+
   @Override
   public GraphName getDefaultNodeName() {
     return GraphName.of("rosjava/listener");
@@ -42,7 +42,6 @@ public class Listener extends AbstractNodeMain {
   public void onStart(ConnectedNode connectedNode) {
     final Log log = connectedNode.getLog();
     subscriber = connectedNode.newSubscriber("chatter", std_msgs.String._TYPE);
-    imageSub =  connectedNode.newSubscriber("camright/raw", Image._TYPE);
 //    subscriber.addMessageListener(new MessageListener<std_msgs.String>() {
 //      @Override
 //      public void onNewMessage(std_msgs.String message) {

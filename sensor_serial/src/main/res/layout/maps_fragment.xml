@@ -65,6 +65,7 @@
 
                 />
 
+
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -195,10 +196,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <Space
+
+            <Button
+                android:id="@+id/edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#02B3E4"
+                android:text="Edit"
+                android:visibility="gone"
+                android:textColor="#FFFFFF"/>
 
             <Button
                 android:id="@+id/confirm_ride"
@@ -210,7 +219,6 @@
                 android:backgroundTint="#02B3E4"
                 android:text="Confirm"
                 android:textColor="#FFFFFF" />
-
 
 
 

@@ -2,11 +2,12 @@ package com.github.ros_java.test_android.sensor_serial;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Trip {
+public class Trip{
     private String id;
 
     private String event;

@@ -2,7 +2,9 @@ package com.github.ros_java.test_android.sensor_serial;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class TripDestination {
+import java.io.Serializable;
+
+public class TripDestination{
     private boolean arrived;
     private LatLng location;
 

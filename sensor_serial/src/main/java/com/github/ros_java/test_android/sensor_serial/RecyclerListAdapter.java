@@ -17,6 +17,7 @@ import java.util.List;
 import static com.github.ros_java.test_android.sensor_serial.MapsFragment.chosenMarkerArrayList;
 import static com.github.ros_java.test_android.sensor_serial.MapsFragment.createDrawableFromView;
 import static com.github.ros_java.test_android.sensor_serial.MapsFragment.markerIcon;
+import static com.github.ros_java.test_android.sensor_serial.MapsFragment.tripToBe;
 
 //import static com.example.hadwa.myapplication.MapsFragment.chosenMarkerArrayList;
 //import static com.example.hadwa.myapplication.MapsFragment.createDrawableFromView;
@@ -46,26 +47,29 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
         @Override
         public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
             final String Marker=Markers.get(position);
+            Log.d("onBindLog", "onBind");
             holder.CardText.setText(Marker.toString());
             holder.deleteCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Log.d("Position", holder.getAdapterPosition()+"");
-                    Markers.remove(holder.getAdapterPosition());
-                    MapsFragment.DestinationCount--;
-                    MapsFragment.markerView.setImageResource(R.drawable.ic_marker_black);
-                    MapsFragment.markerText.setText(MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).getTitle());
-                    MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(markerIcon.getContext(), markerIcon)));
-                    chosenMarkerArrayList.remove(holder.getAdapterPosition());
-                    if(MapsFragment.DestinationCount == 0) {
-                        MapsFragment.BottomSheetText.setText("Pick a drop-off location");
-                        MapsFragment.BottomSheetText.setAlpha((float) 0.54);
-                    }else {
-                        MapsFragment.BottomSheetText.setText(chosenMarkerArrayList.get(chosenMarkerArrayList.size()-1).getTitle());
-                        MapsFragment.BottomSheetText.setAlpha((float) 0.87);
-                    }
-                    notifyItemRemoved(holder.getAdapterPosition());
+                        Log.d("Position", holder.getAdapterPosition() + "");
+
+                        Markers.remove(holder.getAdapterPosition());
+                        MapsFragment.DestinationCount--;
+                        MapsFragment.markerView.setImageResource(R.drawable.ic_marker_black);
+                        MapsFragment.markerText.setText(MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).getTitle());
+                        MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(markerIcon.getContext(), markerIcon)));
+                        chosenMarkerArrayList.remove(holder.getAdapterPosition());
+                        if (MapsFragment.DestinationCount == 0) {
+                            MapsFragment.BottomSheetText.setText("Pick a drop-off location");
+                            MapsFragment.BottomSheetText.setAlpha((float) 0.54);
+                        } else {
+                            MapsFragment.BottomSheetText.setText(chosenMarkerArrayList.get(chosenMarkerArrayList.size() - 1).getTitle());
+                            MapsFragment.BottomSheetText.setAlpha((float) 0.87);
+                        }
+                        notifyItemRemoved(holder.getAdapterPosition());
+
                 }
             });
         }
@@ -86,6 +90,8 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             }
 
         }
+
+
 
 
 

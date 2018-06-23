@@ -28,4 +28,6 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder implements ListI
             itemView.setBackgroundColor(0);
         }
 
+
+
     }

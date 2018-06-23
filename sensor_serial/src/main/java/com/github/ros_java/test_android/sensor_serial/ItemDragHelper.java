@@ -36,6 +36,7 @@ class ItemDragHelper extends ItemTouchHelper.Callback {
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
+          Log.d("brownies", "onSwiped");
 
 //
 //        if(direction== ItemTouchHelper.UP){
@@ -48,7 +49,16 @@ class ItemDragHelper extends ItemTouchHelper.Callback {
     }
 
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        itemHelper.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        if(MapsFragment.appState == "modify"  ) {
+            if(!MapsFragment.tripToBe.getDestinations().get(viewHolder.getAdapterPosition()).isArrived()){
+                itemHelper.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            }else{
+
+            }
+
+        }else {
+            itemHelper.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        }
         return true;
     }
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
@@ -56,15 +66,18 @@ class ItemDragHelper extends ItemTouchHelper.Callback {
 
 
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            Log.d("DragHelperr", "am I here?");
+            Log.d("DragHelper", "#1");
             if (viewHolder instanceof ListItemTouchHelper) {
             // Let the view holder know that this item is being moved or dragged
+                Log.d("DragHelper", "#2");
 
             ((ListItemTouchHelper) viewHolder).onItemSelected();
         }
             //viewHolder.itemView.setBackgroundColor(Color.LTGRAY);
 
         }
+        Log.d("DragHelper", "#3");
+
 
         super.onSelectedChanged(viewHolder, actionState);
     }

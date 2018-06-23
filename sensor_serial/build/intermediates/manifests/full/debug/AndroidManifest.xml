@@ -86,6 +86,18 @@
             android:name="com.github.ros_java.test_android.sensor_serial.AppStart"
             android:label="@string/title_activity_app_start"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <service android:name="com.github.ros_java.test_android.sensor_serial.MyFirebaseMessagingService" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name="com.github.ros_java.test_android.sensor_serial.MyFirebaseInstanceIDService" >
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity android:name="com.github.ros_java.test_android.sensor_serial.VisualizationActivity" />
 
         <meta-data
