@@ -117,6 +117,7 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(mLastLocation));
                     if(!drawRoute) {
                        // Log.d("CurrentDestinationLocCB", String.valueOf(MapsFragment.tripToBe.getDestinations().size()));
+                        //TODO #3
                         GetRoutToMarker(MapsFragment.tripToBe.getDestinations().get(currentDestination()).getLocation());
                         drawRoute = true;
                     }
@@ -194,16 +195,15 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
     public void onResume() {
         super.onResume();
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //TODO MapsFragment.tripToBe.getDestinations().get(0).getLocation() should be changed can't refrence with index
-                if(mLastLocation!=null && MapsFragment.tripToBe.getDestinations().get(0).getLocation()!=null ) {
-                    GetRoutToMarker(MapsFragment.tripToBe.getDestinations().get(0).getLocation());
-                }
-            }
-        }, 2000);
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(mLastLocation!=null && MapsFragment.tripToBe.getDestinations().get(0).getLocation()!=null ) {
+//                    GetRoutToMarker(MapsFragment.tripToBe.getDestinations().get(currentDestination()).getLocation());
+//                }
+//            }
+//        }, 2000);
     }
 
     private void GetRoutToMarker(LatLng clickedMarker) {
@@ -316,7 +316,8 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
                 if(car.getCurrentTrip()!=null){
                     MapsFragment.tripToBe = car.getCurrentTrip();
                     removePolylines();
-                    GetRoutToMarker(MapsFragment.tripToBe.getDestinations().get(0).getLocation());
+                    //TODO #1
+                    GetRoutToMarker(MapsFragment.tripToBe.getDestinations().get(currentDestination()).getLocation());
 
                     Toast.makeText(getApplicationContext(), "Trip Updated", Toast.LENGTH_SHORT).show();
                 }
@@ -352,7 +353,9 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
         Intent intent = new Intent("onEnd");
         intent.putExtra("EVENT", "ResetAll");
         broadcaster.sendBroadcast(intent);
+
         this.finish();
+        removePolylines();
         String cancelUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/end/tablet/hadwa";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
                 (Request.Method.GET, cancelUrl, null, new Response.Listener<JSONArray>() {
@@ -393,9 +396,8 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
     }
 
 
-    public int currentDestination(){
+    public static int currentDestination(){
 //        Log.d("CurrentDestination", String.valueOf(MapsFragment.tripToBe.getDestinations().size()));
-        //TODO: make a condition to check that tripToBe.size is not null as it occasionally crashes because of the mLocationCallback
         for (int i=0 ; i<MapsFragment.tripToBe.getDestinations().size();i++){
             if(!MapsFragment.tripToBe.getDestinations().get(i).isArrived())
                 return i;

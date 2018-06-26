@@ -76,14 +76,12 @@ import com.tapadoo.alerter.OnShowAlertListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ros.android.view.visualization.VisualizationView;
 import org.ros.message.MessageListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-//import std_msgs.String;
-
 import std_msgs.String;
 
 import static com.github.ros_java.test_android.sensor_serial.Listener.subscriber;
@@ -95,7 +93,7 @@ import static com.github.ros_java.test_android.sensor_serial.Listener.subscriber
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,DirectionCallback, GoogleMap.OnMarkerClickListener {
+public class MapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,DirectionCallback, GoogleMap.OnMarkerClickListener, ListListener {
 
     static GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -105,8 +103,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     static LatLng mLastLocation;
     private LatLng Dest1 = new LatLng(29.988428, 31.4389311);
     static HashMap<java.lang.String, LatLng> pinLocations;
-    static ArrayList<Marker> chosenMarkerArrayList;
+    static MyList chosenMarkerArrayList;
     static ArrayList<Marker> AllMarkersArrayList;
+    static boolean localTrip = true;
 
     static TextView markerText;
     static View markerIcon;
@@ -163,8 +162,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         requestTrip = new RequestTrip();
         createdTrip = new Trip();
         tripToBe = new Trip();
+        markerView = (ImageView) markerIcon.findViewById(R.id.icon1);
 
-
+        polylines = new ArrayList<>();
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -192,7 +192,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         Markers = new ArrayList<>();
-        chosenMarkerArrayList = new ArrayList<Marker>();
+        chosenMarkerArrayList = new MyList(this);
         pinLocations = new HashMap<java.lang.String, LatLng>();
 
         RecyclerListAdapter adapter = new RecyclerListAdapter(getActivity(), Markers);
@@ -208,6 +208,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver((mMessageReceiver2),
                 new IntentFilter("onEnd")
         );
+
 
         updateFCMServer();
 
@@ -254,10 +255,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                     getTripFromServer();
                     break;
                 case "CANCEL":
-                    onCancel();
+                    Log.d("appState", appState);
+                    if(!appState.equals("initialState"))
+                        onCancel();
                     break;
                 case "END":
-                    onReset();
+                    Log.d("appState", appState);
+                    if(!appState.equals("initialState"))
+                        onReset();
                     break;
                 case "CHANGE_DESTINATION":
                     modifyFromServer();
@@ -311,7 +316,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             Bundle bundle = intent.getExtras();
             java.lang.String status = bundle.getString("EVENT");
             if(status.equals("ResetAll")) {
-            onReset();
+                if(!appState.equals("initialState"))
+                    onReset();
             }
             if(status.equals("Modify")) {
               onModify();
@@ -526,49 +532,64 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 //                            });
 //                        }
                                     if(tripState == "remoteTrip"){
-                                        List<TripDestination> newDestinations = new ArrayList<>();
 
-                                        for(int i =0; i<Markers.size(); i++){
+//                                        List<TripDestination> newDestinations = new ArrayList<>();
+//
+//                                        for(int i =0; i<Markers.size(); i++){
+//
+//                                            newDestinations.add(new TripDestination(pinLocations.get(Markers.get(i))));
+//
+//                                        }
+//
+//
+//                                        Trip modifiedTrip = new Trip();
+//                                        modifiedTrip.setDestinations(newDestinations);
+//                                        java.lang.String url = "https://sdc-api-gateway.herokuapp.com/car/trip/change/tablet/hadwa";
+//                                        java.lang.String str = gson.toJson(modifiedTrip);
+//                                        JSONObject trip = new JSONObject();
+//                                        try {
+//                                            trip = new JSONObject(str);
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                        JsonObjectRequest tripRequest = new JsonObjectRequest
+//                                                (Request.Method.POST, url, trip, new Response.Listener<JSONObject>() {
+//
+//                                                    @Override
+//                                                    public void onResponse(JSONObject response) {
+//                                                        Log.v("EDITDESTINATION", response.toString());
+//                                                        Trip tripp = gson.fromJson(response.toString(), Trip.class);
+//
+//
+//
+//                                                    }
+//                                                }, new Response.ErrorListener() {
+//
+//                                                    @Override
+//                                                    public void onErrorResponse(VolleyError error) {
+//
+//                                                    }
+//                                                });
+//
+//                                        MySingleton.getInstance(getContext()).addToRequestQueue(tripRequest);
 
-                                            newDestinations.add(new TripDestination(pinLocations.get(Markers.get(i))));
-
-                                        }
-
-
-                                        Trip modifiedTrip = new Trip();
-                                        modifiedTrip.setDestinations(newDestinations);
-                                        java.lang.String url = "https://sdc-api-gateway.herokuapp.com/car/trip/change/tablet/hadwa";
-                                        java.lang.String str = gson.toJson(modifiedTrip);
-                                        JSONObject trip = new JSONObject();
-                                        try {
-                                            trip = new JSONObject(str);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                        JsonObjectRequest tripRequest = new JsonObjectRequest
-                                                (Request.Method.POST, url, trip, new Response.Listener<JSONObject>() {
-
-                                                    @Override
-                                                    public void onResponse(JSONObject response) {
-                                                        Log.v("EDITDESTINATION", response.toString());
-                                                        Trip tripp = gson.fromJson(response.toString(), Trip.class);
 
 
 
-                                                    }
-                                                }, new Response.ErrorListener() {
-
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-
-                                                    }
-                                                });
-
-                                        MySingleton.getInstance(getContext()).addToRequestQueue(tripRequest);
 
                                     }
+                                    if(appState.equals("modify"))
+                                    {
+                                        if(!(VisualizationActivity.currentDestination() >= chosenMarkerArrayList.size())) {
+                                            GetRoutToMarker(chosenMarkerArrayList.get(VisualizationActivity.currentDestination()).getPosition());
+                                        }
+
+                                    }else {
+                                        GetRoutToMarker(pinLocations.get(Markers.get(0)));
+                                    }
                                     appState = "routeReady";
-                                    GetRoutToMarker(pinLocations.get(Markers.get(0)));
+                                    //this can't be from tripToBe as it is still null
+
                                     setBottomSheets();
                                     bottomSheet.setVisibility(View.GONE);
                                     bottomSheet2.setVisibility(View.VISIBLE);
@@ -602,13 +623,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                         break;
                     case "modify":
                         confirmModify();
+                        if(!localTrip){
+                            notifyServerOnContinueTrip();
+                        }
                         break;
                     case "remoteTrip":
+//                       onArrivePickup();
+                        notifyServerOnStartTrip();
                         startActivity(visualizationIntent);
                         getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
                         break;
                     case "DestinationArrived":
                         appState="DestinationArrived";
+                        notifyServerOnContinueTrip();
                         startActivity(visualizationIntent);
                         getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
                         break;
@@ -627,6 +654,51 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         startLocationUpdates();
 
 
+    }
+
+    public void onArrivePickup()
+    {
+        java.lang.String pinUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/arrive/pickup/hadwa";
+        // Log.d("osamaa", "I entered1");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Method.GET, pinUrl, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                            }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        MySingleton.getInstance(getActivity()).addToRequestQueue(jsonArrayRequest);
+
+    }
+    public void notifyServerOnStartTrip(){
+
+        java.lang.String pinUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/start/tablet/hadwa";
+        // Log.d("osamaa", "I entered1");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Method.GET, pinUrl, null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+
+        // Access the RequestQueue through your singleton class.
+        MySingleton.getInstance(getActivity()).addToRequestQueue(jsonArrayRequest);
     }
 
     public void setBottomSheets(){
@@ -725,7 +797,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
         Markers.clear();
         recyclerView.getAdapter().notifyDataSetChanged();
-
+        DestinationCount =0;
         tripState = "modify";
 //        for (int i = 0; i<Markers.size(); i++){
 //            Markers.remove(i);
@@ -748,15 +820,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
         appState = "modify";
         for (int i = 0; i< tripToBe.getDestinations().size(); i++){
-            if(!tripToBe.getDestinations().get(i).isArrived())
+           // if(!tripToBe.getDestinations().get(i).isArrived())
                 chosenMarkerArrayList.add(GetMarkersFromLatlng(tripToBe.getDestinations().get(i).getLocation()));
+                DestinationCount++;
         }
         for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
-            markerView.setImageResource(R.drawable.ic_marker_blue);
-            markerText.setText(chosenMarkerArrayList.get(i).getTitle());
-            Log.d("Marker Titles", chosenMarkerArrayList.get(i).getTitle() + Markers.size());
-            chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
-            Log.d("Marker Titles2", MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+            if(!tripToBe.getDestinations().get(i).isArrived()) {
+                markerView.setImageResource(R.drawable.ic_marker_blue);
+                markerText.setText(chosenMarkerArrayList.get(i).getTitle());
+                Log.d("Marker Titles", chosenMarkerArrayList.get(i).getTitle() + Markers.size());
+                chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+                Log.d("Marker Titles2", MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+            }
             Markers.add(chosenMarkerArrayList.get(i).getTitle());
         }
     }
@@ -768,6 +843,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         //confirmRide.setClickable(true);
         for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
             if(tripToBe.getDestinations().get(i).isArrived()) {
+                //munf3sh ashan myadsh tany destinations
                 //DestinationCount--;
                 markerView.setImageResource(R.drawable.ic_marker_black);
                 markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
@@ -781,12 +857,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                 markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
                 chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
                 Log.d("FirstMarker1",""+tripToBe.getDestinations().get(i).getLocation());
-                Log.d("FiratMarker2",""+ chosenMarkerArrayList.get(i));
+                Log.d("FirstMarker2",""+ chosenMarkerArrayList.get(i));
 //                Markers.add(chosenMarkerArrayList.get(i).getTitle());
 
             }
         }
-        GetRoutToMarker(pinLocations.get(Markers.get(0)));
+        //TODO #5
+        GetRoutToMarker(tripToBe.getDestinations().get(VisualizationActivity.currentDestination()).getLocation());
 
         //chosenMarkerArrayList.clear();
         setBottomSheets();
@@ -872,7 +949,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             Route route = direction.getRouteList().get(0);
             ArrayList<LatLng> directionPositionList = route.getLegList().get(0).getDirectionPoint();
             //mMap.addPolyline(DirectionConverter.createPolyline(getContext(), directionPositionList, 4, Color.BLACK));
-            polylines = new ArrayList<>();
+//            polylines = new ArrayList<>();
             PolylineOptions polyOptions = new PolylineOptions();
             polyOptions.color(Color.BLACK);
             polyOptions.width(6);
@@ -977,9 +1054,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                     Drawable drawable = null;
                     Markers.add(marker.getTitle());
                     chosenMarkerArrayList.add(marker);
+                    if(chosenMarkerArrayList.size()==1)
+                    {
+                        setCarAvailability(false);
+                    }
                   //  Log.d("brownies", java.lang.String.valueOf(Markers.size()));
                     //GetRoutToMarker(marker.getPosition());
-                    markerView = (ImageView) markerIcon.findViewById(R.id.icon1);
+//                    markerView = (ImageView) markerIcon.findViewById(R.id.icon1);
                     markerView.setImageResource(R.drawable.ic_marker_blue);
                     markerText.setText(marker.getTitle());
                     marker.setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(getContext(), markerIcon)));
@@ -1075,9 +1156,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     // TODO: Get pickup location from server, and send to car
     // TODO: Send to server a POST request when I reach pickup location
     private void getTripFromServer() {
-
+        localTrip=false;
         Markers.clear();
-
+//        chosenMarkerArrayList.clear();
         tripState = "remoteTrip";
         java.lang.String tripUrl = "https://sdc-api-gateway.herokuapp.com/car/find/hadwa";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Method.GET, tripUrl, null, new Response.Listener<JSONObject>() {
@@ -1089,9 +1170,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                      tripToBe = car.getCurrentTrip();
 
                     for(int i = 0; i< tripToBe.getDestinations().size(); i++){
-                        TripDestination d= tripToBe.getDestinations().get(i);
+                        TripDestination d = tripToBe.getDestinations().get(i);
+                        chosenMarkerArrayList.add(GetMarkersFromLatlng(tripToBe.getDestinations().get(i).getLocation()));
                         Markers.add(getGucPlaceByLatLng(d.getLocation()));
                     }
+                    for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
+                        if (!tripToBe.getDestinations().get(i).isArrived()) {
+                            markerView.setImageResource(R.drawable.ic_marker_blue);
+                            markerText.setText(MapsFragment.chosenMarkerArrayList.get(i).getTitle());
+                            chosenMarkerArrayList.get(i).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(MapsFragment.markerIcon.getContext(), markerIcon)));
+
+                        }
+                    }
+
                     DestinationCount = Markers.size();
 
 
@@ -1109,7 +1200,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 //                            });
 //                        }
                                     appState = "routeReady";
-                                    GetRoutToMarker(pinLocations.get(Markers.get(0)));
+                                    //TODO #4
+                                    GetRoutToMarker(tripToBe.getDestinations().get(VisualizationActivity.currentDestination()).getLocation());
                                     bottomSheet = (LinearLayout) getActivity().findViewById(R.id.BottomSheet_layout);
                                     bottomSheet2 = (LinearLayout) getActivity().findViewById(R.id.BottomSheet_layout2);
 
@@ -1169,7 +1261,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                     bottomSheet.setVisibility(View.GONE);
                                     bottomSheet2.setVisibility(View.VISIBLE);
 
-
+                                    onArrivePickup();
                                 } else {
                                     Toast.makeText(getContext(), "Please choose a destination", Toast.LENGTH_SHORT).show();
                                 }
@@ -1225,6 +1317,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                 tripsLeft++;
             }
         }
+        Log.d("TripsLeft", java.lang.String.valueOf(tripsLeft));
         if(tripsLeft==0){
             confirmRide.setClickable(true);  //I added this to make confirmRide clickable if the ride was cancelled because of a modification.
             onReset();
@@ -1244,10 +1337,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             // Access the RequestQueue through your singleton class.
             MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
         }else {
-            tripToBe.setDestinations(newDestinations);
-            java.lang.String str = gson.toJson(tripToBe);
+            modifyTrip.setDestinations(newDestinations);
+            java.lang.String str = gson.toJson(modifyTrip);
             JSONObject trip = new JSONObject();
-
+            tripToBe.setDestinations(newDestinations);
             try {
                 trip = new JSONObject(str);
             } catch (JSONException e) {
@@ -1373,7 +1466,55 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
     }
 
+    public void notifyServerOnContinueTrip(){
+        java.lang.String pinUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/continue/tablet/hadwa";
+        // Log.d("osamaa", "I entered1");
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Method.GET, pinUrl, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+        // Access the RequestQueue through your singleton class.
+        MySingleton.getInstance(getActivity()).addToRequestQueue(jsonArrayRequest);
+    }
+
+    public void setCarAvailability(boolean carAvailability ){
+        java.lang.String modifyTripUrl;
+        if(carAvailability){
+             modifyTripUrl = "https://sdc-trip-car-management.herokuapp.com/car/update/availability/hadwa/true";
+        }else
+            {
+                modifyTripUrl = "https://sdc-trip-car-management.herokuapp.com/car/update/availability/hadwa/false";
+
+            }
+
+        JsonObjectRequest tripRequest = new JsonObjectRequest(Method.POST, modifyTripUrl, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("ErrorModify", java.lang.String.valueOf(error.networkResponse.statusCode));
+            }
+        });
+
+        MySingleton.getInstance(getContext()).addToRequestQueue(tripRequest);
+
 
     }
 
-
+    @Override
+    public void onListChange() {
+        //Log.d("listener", "geet hena?");
+        if(chosenMarkerArrayList.size() == 0 && appState!="modify"){
+            setCarAvailability(true);
+        }
+    }
+}

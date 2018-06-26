@@ -12,12 +12,12 @@
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-xhdpi-v4/abc_list_selector_disabled_holo_dark.9.png"
     },
     {
-        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-xxxhdpi-v4_abc_switch_track_mtrl_alpha.9.png.flat",
-        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-xxxhdpi-v4/abc_switch_track_mtrl_alpha.9.png"
-    },
-    {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/color-v11_abc_background_cache_hint_selector_material_light.xml.flat",
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/color-v11/abc_background_cache_hint_selector_material_light.xml"
+    },
+    {
+        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-xxxhdpi-v4_abc_switch_track_mtrl_alpha.9.png.flat",
+        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-xxxhdpi-v4/abc_switch_track_mtrl_alpha.9.png"
     },
     {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/layout_abc_list_menu_item_layout.xml.flat",
@@ -40,12 +40,12 @@
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-hdpi-v4/abc_ic_commit_search_api_mtrl_alpha.png"
     },
     {
-        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-mdpi-v4_places_ic_clear.png.flat",
-        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/play-services-places-15.0.0.aar/5a3b38f2afcfb7494ef611124d77b3de/res/drawable-mdpi-v4/places_ic_clear.png"
-    },
-    {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-xhdpi-v4_abc_popup_background_mtrl_mult.9.png.flat",
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-xhdpi-v4/abc_popup_background_mtrl_mult.9.png"
+    },
+    {
+        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-mdpi-v4_places_ic_clear.png.flat",
+        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/play-services-places-15.0.0.aar/5a3b38f2afcfb7494ef611124d77b3de/res/drawable-mdpi-v4/places_ic_clear.png"
     },
     {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-mdpi_ic_launcher_background.png.flat",
@@ -60,12 +60,12 @@
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-xhdpi-v4/abc_btn_check_to_on_mtrl_015.png"
     },
     {
-        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/color_switch_thumb_material_dark.xml.flat",
-        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/color/switch_thumb_material_dark.xml"
-    },
-    {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/raw_amu_multigeometry_placemarks.kml.flat",
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/android-maps-utils-0.5.aar/879ecd821e3b7b6e5a002bef5c4c8dfd/res/raw/amu_multigeometry_placemarks.kml"
+    },
+    {
+        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/color_switch_thumb_material_dark.xml.flat",
+        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/color/switch_thumb_material_dark.xml"
     },
     {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-mdpi-v4_abc_list_pressed_holo_dark.9.png.flat",
@@ -120,12 +120,12 @@
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/35cb6542dd212a4370d1f5284d496183/res/layout/notification_action_tombstone.xml"
     },
     {
-        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-hdpi-v4_directional_arrow.png.flat",
-        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/android_15-0.3.3.aar/4a803c78e5fade87c6ca6e27f1efe219/res/drawable-hdpi-v4/directional_arrow.png"
-    },
-    {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable_abc_list_selector_background_transition_holo_dark.xml.flat",
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable/abc_list_selector_background_transition_holo_dark.xml"
+    },
+    {
+        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-hdpi-v4_directional_arrow.png.flat",
+        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/android_15-0.3.3.aar/4a803c78e5fade87c6ca6e27f1efe219/res/drawable-hdpi-v4/directional_arrow.png"
     },
     {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/color-v23_abc_tint_seek_thumb.xml.flat",

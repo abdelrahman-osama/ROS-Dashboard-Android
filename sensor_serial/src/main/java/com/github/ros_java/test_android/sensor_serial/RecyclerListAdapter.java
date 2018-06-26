@@ -9,7 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+
+import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +67,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
                         MapsFragment.markerText.setText(MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).getTitle());
                         MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(markerIcon.getContext(), markerIcon)));
                         chosenMarkerArrayList.remove(holder.getAdapterPosition());
+                        Log.d("destinationCount", String.valueOf(MapsFragment.DestinationCount));
                         if (MapsFragment.DestinationCount == 0) {
                             MapsFragment.BottomSheetText.setText("Pick a drop-off location");
                             MapsFragment.BottomSheetText.setAlpha((float) 0.54);
@@ -95,14 +102,19 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
 
 
 
+
         public void onMove(int fromPos, int toPos) {
             if (fromPos < toPos) {
                 for (int i = fromPos; i < toPos; i++) {
                 Collections.swap(Markers, i, i + 1);
+                Collections.swap(chosenMarkerArrayList.getList(), i, i + 1);
+
                 }
             } else {
                 for (int i = fromPos; i > toPos; i--) {
                     Collections.swap(Markers, i, i - 1);
+                    Collections.swap(chosenMarkerArrayList.getList(), i, i -1);
+
 
                 }
             }
