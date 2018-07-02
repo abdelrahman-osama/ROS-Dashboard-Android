@@ -400,6 +400,10 @@
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/android_15-0.3.3.aar/4a803c78e5fade87c6ca6e27f1efe219/res/drawable-hdpi-v4/small_d_widget_3.png"
     },
     {
+        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable_emergency_button.png.flat",
+        "source": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/src/main/res/drawable/emergency_button.png"
+    },
+    {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_spinner_mtrl_am_alpha.9.png.flat",
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-hdpi-v4/abc_spinner_mtrl_am_alpha.9.png"
     },
@@ -1776,12 +1780,12 @@
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/android_10-0.3.3.aar/d46d317338d9a3af50f870798dcd7b8d/res/drawable/stale.png"
     },
     {
-        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_textfield_search_activated_mtrl_alpha.9.png.flat",
-        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-hdpi-v4/abc_textfield_search_activated_mtrl_alpha.9.png"
-    },
-    {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/layout_notification_action.xml.flat",
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/support-compat-26.1.0.aar/35cb6542dd212a4370d1f5284d496183/res/layout/notification_action.xml"
+    },
+    {
+        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-hdpi-v4_abc_textfield_search_activated_mtrl_alpha.9.png.flat",
+        "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-hdpi-v4/abc_textfield_search_activated_mtrl_alpha.9.png"
     },
     {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-mdpi-v4_common_google_signin_btn_icon_dark_normal_background.9.png.flat",
@@ -1978,6 +1982,10 @@
     {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_abc_btn_check_to_on_mtrl_015.png.flat",
         "source": "/Users/abdelrahman/.gradle/caches/transforms-1/files-1.1/appcompat-v7-26.1.0.aar/66f111617a0995bcc62108d532e79c7c/res/drawable-xxhdpi-v4/abc_btn_check_to_on_mtrl_015.png"
+    },
+    {
+        "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/drawable_emergency_button2.png.flat",
+        "source": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/src/main/res/drawable/emergency_button2.png"
     },
     {
         "merged": "/Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/res/merged/debug/mipmap-anydpi-v26_ic_launcher.xml.flat",

@@ -1,9 +1,11 @@
 package com.github.ros_java.test_android.sensor_serial;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,9 +22,11 @@ import org.json.JSONObject;
 import java.util.Collections;
 import java.util.List;
 
+import static com.github.ros_java.test_android.sensor_serial.MapsFragment.appState;
 import static com.github.ros_java.test_android.sensor_serial.MapsFragment.chosenMarkerArrayList;
 import static com.github.ros_java.test_android.sensor_serial.MapsFragment.createDrawableFromView;
 import static com.github.ros_java.test_android.sensor_serial.MapsFragment.markerIcon;
+import static com.github.ros_java.test_android.sensor_serial.MapsFragment.modifyDestinations;
 import static com.github.ros_java.test_android.sensor_serial.MapsFragment.tripToBe;
 
 //import static com.example.hadwa.myapplication.MapsFragment.chosenMarkerArrayList;
@@ -35,7 +39,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
        // LinkedHashSet<String> Markers = new LinkedHashSet<String>();
        // List<String> uniqueStrings = new ArrayList<String>(Markers);
         List<String> Markers;
-
+        static boolean dragable = true;
 
         public RecyclerListAdapter(Context mCtx,  List<String>  Markers) {
             this.mCtx = mCtx;
@@ -55,27 +59,69 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
             final String Marker=Markers.get(position);
             Log.d("onBindLog", "onBind");
             holder.CardText.setText(Marker.toString());
+            holder.CardText.setTextColor(Color.BLACK);
+            if(appState.equals("modify")) {
+                if (modifyDestinations.get(holder.getAdapterPosition()).isArrived()) {
+                    holder.deleteCard.setVisibility(View.GONE);
+                    holder.CardText.setTextColor(Color.GRAY);
+                }
+            }
+            holder.itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    Log.d("touchListener","ana geet hena?");
+                    if(appState.equals("modify")){
+                        if(modifyDestinations.get(holder.getAdapterPosition()).isArrived()){
+                            dragable = false;
+                        }else{
+                            dragable = true;
+                        }
+                    }
+                    return false;
+                }
+            });
             holder.deleteCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                         Log.d("Position", holder.getAdapterPosition() + "");
-
-                        Markers.remove(holder.getAdapterPosition());
-                        MapsFragment.DestinationCount--;
-                        MapsFragment.markerView.setImageResource(R.drawable.ic_marker_black);
-                        MapsFragment.markerText.setText(MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).getTitle());
-                        MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(markerIcon.getContext(), markerIcon)));
-                        chosenMarkerArrayList.remove(holder.getAdapterPosition());
-                        Log.d("destinationCount", String.valueOf(MapsFragment.DestinationCount));
-                        if (MapsFragment.DestinationCount == 0) {
-                            MapsFragment.BottomSheetText.setText("Pick a drop-off location");
-                            MapsFragment.BottomSheetText.setAlpha((float) 0.54);
-                        } else {
-                            MapsFragment.BottomSheetText.setText(chosenMarkerArrayList.get(chosenMarkerArrayList.size() - 1).getTitle());
-                            MapsFragment.BottomSheetText.setAlpha((float) 0.87);
+                        if(appState.equals("modify")){
+                            if(!modifyDestinations.get(holder.getAdapterPosition()).isArrived()){
+                                modifyDestinations.remove(holder.getAdapterPosition());
+                                Markers.remove(holder.getAdapterPosition());
+                                MapsFragment.DestinationCount--;
+                                MapsFragment.markerView.setImageResource(R.drawable.ic_marker_black);
+                                MapsFragment.markerText.setText(MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).getTitle());
+                                MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(markerIcon.getContext(), markerIcon)));
+                                chosenMarkerArrayList.remove(holder.getAdapterPosition());
+                                Log.d("destinationCount", String.valueOf(MapsFragment.DestinationCount));
+                                if (MapsFragment.DestinationCount == 0) {
+                                    MapsFragment.BottomSheetText.setText("Pick a drop-off location");
+                                    MapsFragment.BottomSheetText.setAlpha((float) 0.54);
+                                } else {
+                                    MapsFragment.BottomSheetText.setText(chosenMarkerArrayList.get(chosenMarkerArrayList.size() - 1).getTitle());
+                                    MapsFragment.BottomSheetText.setAlpha((float) 0.87);
+                                }
+                                notifyItemRemoved(holder.getAdapterPosition());
+                            }
+                        }else{
+                            Markers.remove(holder.getAdapterPosition());
+                            MapsFragment.DestinationCount--;
+                            MapsFragment.markerView.setImageResource(R.drawable.ic_marker_black);
+                            MapsFragment.markerText.setText(MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).getTitle());
+                            MapsFragment.chosenMarkerArrayList.get(holder.getAdapterPosition()).setIcon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(markerIcon.getContext(), markerIcon)));
+                            chosenMarkerArrayList.remove(holder.getAdapterPosition());
+                            Log.d("destinationCount", String.valueOf(MapsFragment.DestinationCount));
+                            if (MapsFragment.DestinationCount == 0) {
+                                MapsFragment.BottomSheetText.setText("Pick a drop-off location");
+                                MapsFragment.BottomSheetText.setAlpha((float) 0.54);
+                            } else {
+                                MapsFragment.BottomSheetText.setText(chosenMarkerArrayList.get(chosenMarkerArrayList.size() - 1).getTitle());
+                                MapsFragment.BottomSheetText.setAlpha((float) 0.87);
+                            }
+                            notifyItemRemoved(holder.getAdapterPosition());
                         }
-                        notifyItemRemoved(holder.getAdapterPosition());
+
 
                 }
             });
@@ -108,14 +154,14 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
                 for (int i = fromPos; i < toPos; i++) {
                 Collections.swap(Markers, i, i + 1);
                 Collections.swap(chosenMarkerArrayList.getList(), i, i + 1);
+                Collections.swap(modifyDestinations, i, i+1);
 
                 }
             } else {
                 for (int i = fromPos; i > toPos; i--) {
                     Collections.swap(Markers, i, i - 1);
                     Collections.swap(chosenMarkerArrayList.getList(), i, i -1);
-
-
+                    Collections.swap(modifyDestinations,i, i-1);
                 }
             }
             notifyItemMoved(fromPos, toPos);

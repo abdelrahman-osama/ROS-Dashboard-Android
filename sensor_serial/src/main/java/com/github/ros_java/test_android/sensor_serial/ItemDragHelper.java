@@ -11,6 +11,9 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.Collections;
 
+import static com.github.ros_java.test_android.sensor_serial.MapsFragment.appState;
+import static com.github.ros_java.test_android.sensor_serial.MapsFragment.tripToBe;
+
 /**
  * Created by hadwa on 4/22/2018.
  */
@@ -30,15 +33,19 @@ class ItemDragHelper extends ItemTouchHelper.Callback {
     }
 
     public boolean isLongPressDragEnabled() {
-        return true;
+        Log.d("isLongPress", "?");
+        if(!RecyclerListAdapter.dragable && MapsFragment.appState == "modify") {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
           Log.d("brownies", "onSwiped");
 
-//
 //        if(direction== ItemTouchHelper.UP){
 //            itemHelper.Markers.remove(itemHelper.Markers.get(viewHolder.getAdapterPosition()));
 //            itemHelper.notifyItemRemoved(viewHolder.getAdapterPosition());
@@ -49,16 +56,19 @@ class ItemDragHelper extends ItemTouchHelper.Callback {
     }
 
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        if(MapsFragment.appState == "modify"  ) {
-            if(!MapsFragment.tripToBe.getDestinations().get(viewHolder.getAdapterPosition()).isArrived()){
+//        if(MapsFragment.appState == "modify"  ) {
+//            if(!MapsFragment.tripToBe.getDestinations().get(viewHolder.getAdapterPosition()).isArrived()){
+//                itemHelper.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+//            }
+//
+//        }else {
+        if(appState.equals("modify")) {
+            if (!tripToBe.getDestinations().get(target.getAdapterPosition()).isArrived())
                 itemHelper.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-            }else{
-
-            }
-
-        }else {
+        }else{
             itemHelper.onMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         }
+  //      }
         return true;
     }
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {

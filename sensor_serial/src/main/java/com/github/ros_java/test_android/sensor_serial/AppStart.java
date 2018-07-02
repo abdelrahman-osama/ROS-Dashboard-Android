@@ -23,8 +23,10 @@ public class AppStart extends AppCompatActivity {
     public void onBackPressed(){
 //        Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
         if(MapsFragment.appState == "initialState"){
-            Toast.makeText(getApplicationContext(), " Initial state ", Toast.LENGTH_SHORT).show();
-            System.exit(0);
+
+//            Toast.makeText(getApplicationContext(), " Initial state ", Toast.LENGTH_SHORT).show();
+//            System.exit(0);
+
         }
         if(MapsFragment.appState == "routeReady"){
             //Toast.makeText(getApplicationContext(), " Route ready", Toast.LENGTH_SHORT).show();
@@ -34,11 +36,15 @@ public class AppStart extends AppCompatActivity {
             MapsFragment.bottomSheet2.setVisibility(View.GONE);
         }
         if(MapsFragment.appState=="modify"){
-            Intent visualizationIntent = new Intent(this, VisualizationActivity.class);
-            startActivity(visualizationIntent);
+
            // this.getSupportFragmentManager().beginTransaction().remove(MapsFragment);
+            if(MapsFragment.modifyState!="modifyEdit"){
+                Intent visualizationIntent = new Intent(this, VisualizationActivity.class);
+                startActivity(visualizationIntent);
+            }
 
         }
+
         if(MapsFragment.appState=="DestinationArrived")
         {
 

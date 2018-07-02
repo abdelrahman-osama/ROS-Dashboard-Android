@@ -24,13 +24,23 @@
 
     <org.ros.android.view.RosImageView
         android:id="@+id/visualizationImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="640dp"
+        android:layout_height="800dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:cropToPadding="true"
         android:scaleType="fitXY"
         android:src="@null" />
+
+    <org.ros.android.view.RosImageView
+        android:id="@+id/visualizationImage2"
+        android:layout_width="640dp"
+        android:layout_height="800dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:cropToPadding="true"
+        android:scaleType="fitXY"
+        android:src="@null"/>
 
 
     <TextView

@@ -31,7 +31,7 @@ import sensor_msgs.Image;
  */
 public class Listener extends AbstractNodeMain {
 
-  static Subscriber<std_msgs.String> subscriber;
+  static Subscriber<std_msgs.Float32> subscriber;
 
   @Override
   public GraphName getDefaultNodeName() {
@@ -41,7 +41,7 @@ public class Listener extends AbstractNodeMain {
   @Override
   public void onStart(ConnectedNode connectedNode) {
     final Log log = connectedNode.getLog();
-    subscriber = connectedNode.newSubscriber("chatter", std_msgs.String._TYPE);
+    subscriber = connectedNode.newSubscriber("estimated_vel_kmph", std_msgs.Float32._TYPE);
 //    subscriber.addMessageListener(new MessageListener<std_msgs.String>() {
 //      @Override
 //      public void onNewMessage(std_msgs.String message) {

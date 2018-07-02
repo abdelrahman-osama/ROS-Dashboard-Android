@@ -27,6 +27,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -94,7 +95,7 @@ import static com.github.ros_java.test_android.sensor_serial.Listener.subscriber
  * A simple {@link Fragment} subclass.
  */
 public class MapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener,DirectionCallback, GoogleMap.OnMarkerClickListener, ListListener {
-
+    static List<TripDestination> modifyDestinations;
     static GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     LocationRequest mLocationRequest;
@@ -106,6 +107,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     static MyList chosenMarkerArrayList;
     static ArrayList<Marker> AllMarkersArrayList;
     static boolean localTrip = true;
+    private ArrayList<java.lang.String> zeftMarkers;
 
     static TextView markerText;
     static View markerIcon;
@@ -135,8 +137,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     static Button confirmRide;
     static java.lang.String speedValue;
      static Button edit;
+    static Button Canceltrip;
     private java.lang.String tripUrl;
-
+    CardView  destCard;
+    TextView destCardText ;
+    Button destCradBtn;
+    static java.lang.String modifyState;
+    private boolean tmam;
 
     public MapsFragment() {
         // Required empty public constructor
@@ -157,12 +164,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         AllMarkersArrayList = new ArrayList<Marker>();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         //NewText = (TextView)findViewById(R.id.WhichStop);
-
+        zeftMarkers = new ArrayList<java.lang.String>();
         tripState = "localTrip";
         requestTrip = new RequestTrip();
         createdTrip = new Trip();
         tripToBe = new Trip();
         markerView = (ImageView) markerIcon.findViewById(R.id.icon1);
+        //TODO view wala eh
+        destCard = (CardView) markerIcon.findViewById(R.id.destCard);
+         destCardText =(TextView) view.findViewById(R.id.destCardText);
+         destCradBtn =(Button)view.findViewById(R.id.Continue);
+
 
         polylines = new ArrayList<>();
         mLocationCallback = new LocationCallback() {
@@ -212,13 +224,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
         updateFCMServer();
 
-        subscriber.addMessageListener(new MessageListener<String>() {
-            @Override
-            public void onNewMessage(std_msgs.String s) {
-                speedValue = s.getData();
-               // Log.d("listener-log","I heard: \"" + s.getData() + "\"");
-            }
-        });
+//        subscriber.addMessageListener(new MessageListener<String>() {
+//            @Override
+//            public void onNewMessage(std_msgs.String s) {
+//                speedValue = s.getData();
+//               // Log.d("listener-log","I heard: \"" + s.getData() + "\"");
+//            }
+//        });
 
 
 
@@ -339,7 +351,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     };
 
     private void onFinalDestinationArrived() {
-        onReset();
+        destCard.setVisibility(View.VISIBLE);
+
+        destCradBtn.setText("Done");
+        destCardText.setText("Final Destination Arrived ");
+        bottomSheet2.setVisibility(View.GONE);
+        Button Continue=(Button) view.findViewById(R.id.Continue);
+        Continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                destCard.setVisibility(View.GONE);
+                onReset();
+
+//                destCard.setVisibility(View.GONE);
+//                bottomSheet2.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -517,7 +544,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         Button Start = (Button) getActivity().findViewById(R.id.start);
         Start.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                edit.setVisibility(View.GONE);
+                edit.setVisibility(View.VISIBLE);
+                Canceltrip.setVisibility(View.VISIBLE);
+
                 if (mLastLocation != null) {
                     CheckInternet();
                     if (isInternetAvailable()) {
@@ -580,6 +609,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                     }
                                     if(appState.equals("modify"))
                                     {
+                                        edit.setVisibility(View.VISIBLE);
+                                        Canceltrip.setVisibility(View.VISIBLE);
+
                                         if(!(VisualizationActivity.currentDestination() >= chosenMarkerArrayList.size())) {
                                             GetRoutToMarker(chosenMarkerArrayList.get(VisualizationActivity.currentDestination()).getPosition());
                                         }
@@ -587,12 +619,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                     }else {
                                         GetRoutToMarker(pinLocations.get(Markers.get(0)));
                                     }
-                                    appState = "routeReady";
-                                    //this can't be from tripToBe as it is still null
-
                                     setBottomSheets();
                                     bottomSheet.setVisibility(View.GONE);
                                     bottomSheet2.setVisibility(View.VISIBLE);
+                                    if(appState.equals("initialState"))
+                                    appState = "routeReady";
+                                    //this can't be from tripToBe as it is still null
+
+
+
 
 
                                 } else {
@@ -616,37 +651,198 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         confirmRide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 confirmRide.setClickable(false);
-                Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
+                final Intent visualizationIntent = new Intent(getActivity(), VisualizationActivity.class);
+
                 switch (tripState){
-                    case "localTrip": createTrip();
+                    case "localTrip":
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                        builder1.setMessage("Are you sure you want to start your trip?");
+                        builder1.setCancelable(true);
+
+                        builder1.setPositiveButton(
+                                "Yes",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                        ImageView image = new ImageView(getContext());
+                                        image.setImageResource(R.drawable.emergency_button2);
+
+
+                                        AlertDialog.Builder builder5 = new AlertDialog.Builder(getActivity());
+                                        builder5.setView(image);
+                                       // builder5.setTitle("In case you feel unsafe during the trip, please press the emergency button");
+                                        //builder5.setMessage(" ");
+                                        builder5.setCancelable(true);
+//IN CASE YOU FEEL UNSAFE DURING THE TRIP, PLEASE PRESS THE EMERGENCY BUTTON.
+                                        builder5.setPositiveButton(
+                                                "OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+
+
+                                                        dialog.cancel();
+                                                        createTrip();
+                                                    }
+                                                });
+                                        AlertDialog alert15 = builder5.create();
+                                        alert15.show();
+//
+//                                        dialog.cancel();
+//                                        createTrip();
+                                    }
+                                });
+
+                        builder1.setNegativeButton(
+                                "No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+
                         break;
+
                     case "modify":
-                        confirmModify();
-                        if(!localTrip){
-                            notifyServerOnContinueTrip();
-                        }
+
+                        AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                        builder2.setMessage("Are you sure you want to confirm your modifications?");
+                        builder2.setCancelable(true);
+
+                        builder2.setPositiveButton(
+                                "Yes",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                        confirmModify();
+                                        if(!localTrip){
+                                            notifyServerOnContinueTrip();
+                                        }
+                                    }
+                                });
+
+                        builder2.setNegativeButton(
+                                "No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert2 = builder2.create();
+                        alert2.show();
+
+
+
                         break;
                     case "remoteTrip":
+
+                        AlertDialog.Builder builder3 = new AlertDialog.Builder(getActivity());
+                        builder3.setMessage("Are you sure you want to start your trip?");
+                        builder3.setCancelable(true);
+
+                        builder3.setPositiveButton(
+                                "Yes",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                        notifyServerOnStartTrip();
+                                        startActivity(visualizationIntent);
+                                        getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+                                    }
+                                });
+
+                        builder3.setNegativeButton(
+                                "No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert13 = builder3.create();
+                        alert13.show();
+
 //                       onArrivePickup();
-                        notifyServerOnStartTrip();
-                        startActivity(visualizationIntent);
-                        getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+
                         break;
                     case "DestinationArrived":
-                        appState="DestinationArrived";
-                        notifyServerOnContinueTrip();
-                        startActivity(visualizationIntent);
-                        getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+
+                        AlertDialog.Builder builder4 = new AlertDialog.Builder(getActivity());
+                        builder4.setMessage("Are you sure you want to start your trip?");
+                        builder4.setCancelable(true);
+
+                        builder4.setPositiveButton(
+                                "Yes",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                        appState="DestinationArrived";
+                                        notifyServerOnContinueTrip();
+                                        startActivity(visualizationIntent);
+                                        getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
+                                    }
+                                });
+
+                        builder4.setNegativeButton(
+                                "No",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert14 = builder4.create();
+                        alert14.show();
                         break;
                 }
+            }
+        });
+
+        Canceltrip = (Button) getActivity().findViewById(R.id.Cancel);
+        Canceltrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                builder1.setMessage("Are you sure you want to cancel your trip?");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                onReset();
+                            }
+                        });
+
+                builder1.setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+
             }
         });
         edit = (Button) getActivity().findViewById(R.id.edit);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onModify2();
+                if(appState.equals("routeReady")){
+                    getActivity().onBackPressed();
+                }else{
+                    onModify2();
+                }
+
             }
         });
 
@@ -702,47 +898,96 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     }
 
     public void setBottomSheets(){
-        bottomSheet = (LinearLayout) view.findViewById(R.id.BottomSheet_layout);
-        bottomSheet2 = (LinearLayout) view.findViewById(R.id.BottomSheet_layout2);
-
-        TextView dest1 = (TextView) view.findViewById(R.id.dest1);
-        TextView dest2 = (TextView) view.findViewById(R.id.dest2);
-        TextView dest3 = (TextView) view.findViewById(R.id.dest3);
-        TextView dest4 = (TextView) view.findViewById(R.id.dest4);
-
-        ImageView destIcon1 = (ImageView) view.findViewById(R.id.dest_icon1);
-        ImageView destIcon2 = (ImageView) view.findViewById(R.id.dest_icon2);
-        ImageView destIcon3 = (ImageView) view.findViewById(R.id.dest_icon3);
-
-        dest1.setVisibility(View.GONE);
-        dest2.setVisibility(View.GONE);
-        dest3.setVisibility(View.GONE);
-        dest4.setVisibility(View.GONE);
-        destIcon1.setVisibility(View.GONE);
-        destIcon2.setVisibility(View.GONE);
-        destIcon3.setVisibility(View.GONE);
 
 
-        if (Markers.size() == 1) {
-            dest1.setText(Markers.get(0));
-            dest1.setVisibility(View.VISIBLE);
-        }
-        if (Markers.size() == 2) {
-            dest1.setText(Markers.get(0));
-            dest2.setText(Markers.get(1));
-            dest1.setVisibility(View.VISIBLE);
-            dest2.setVisibility(View.VISIBLE);
-            destIcon1.setVisibility(View.VISIBLE);
-        }
-        if (Markers.size() == 3) {
-            dest1.setText(Markers.get(0));
-            dest2.setText(Markers.get(1));
-            dest3.setText(Markers.get(2));
-            dest1.setVisibility(View.VISIBLE);
-            dest2.setVisibility(View.VISIBLE);
-            dest3.setVisibility(View.VISIBLE);
-            destIcon1.setVisibility(View.VISIBLE);
-            destIcon2.setVisibility(View.VISIBLE);
+            bottomSheet = (LinearLayout) view.findViewById(R.id.BottomSheet_layout);
+            bottomSheet2 = (LinearLayout) view.findViewById(R.id.BottomSheet_layout2);
+            destCard = (CardView) view.findViewById(R.id.destCard);
+            TextView dest1 = (TextView) view.findViewById(R.id.dest1);
+            TextView dest2 = (TextView) view.findViewById(R.id.dest2);
+            TextView dest3 = (TextView) view.findViewById(R.id.dest3);
+            TextView dest4 = (TextView) view.findViewById(R.id.dest4);
+
+            ImageView destIcon1 = (ImageView) view.findViewById(R.id.dest_icon1);
+            ImageView destIcon2 = (ImageView) view.findViewById(R.id.dest_icon2);
+            ImageView destIcon3 = (ImageView) view.findViewById(R.id.dest_icon3);
+
+            dest1.setVisibility(View.GONE);
+            dest2.setVisibility(View.GONE);
+            dest3.setVisibility(View.GONE);
+            dest4.setVisibility(View.GONE);
+            destIcon1.setVisibility(View.GONE);
+            destIcon2.setVisibility(View.GONE);
+            destIcon3.setVisibility(View.GONE);
+        Log.d("zeftState", appState);
+        if(appState.equals("DestinationArrived") || appState.equals("modify")) {
+            int zeftSize = 0;
+            //Log.d("zeftState", appState);
+            if(appState.equals("DestinationArrived")) {
+                zeftMarkers.clear();
+                //ArrayList<java.lang.String> zeftMarkers = new ArrayList<>();
+                for (int i = 0; i < tripToBe.getDestinations().size(); i++) {
+                    if (!tripToBe.getDestinations().get(i).isArrived()) {
+                        //Log.d("zeft", getGucPlaceByLatLng(tripToBe.getDestinations().get(i).getLocation()));
+                        zeftSize++;
+                        zeftMarkers.add(getGucPlaceByLatLng(tripToBe.getDestinations().get(i).getLocation()));
+                    }
+                }
+            }else{
+
+                zeftMarkers.clear();
+                for(int i = 0; i<modifyDestinations.size();i++){
+                    if(!modifyDestinations.get(i).isArrived())
+                        zeftMarkers.add(getGucPlaceByLatLng(modifyDestinations.get(i).getLocation()));
+                }
+                zeftSize = zeftMarkers.size();
+            }
+            Log.d("zeftsize", java.lang.String.valueOf(zeftSize));
+
+            if (zeftSize == 1) {
+                dest1.setText(zeftMarkers.get(0));
+                dest1.setVisibility(View.VISIBLE);
+            }
+            if (zeftSize == 2) {
+                dest1.setText(zeftMarkers.get(0));
+                dest2.setText(zeftMarkers.get(1));
+                dest1.setVisibility(View.VISIBLE);
+                dest2.setVisibility(View.VISIBLE);
+                destIcon1.setVisibility(View.VISIBLE);
+            }
+            if (zeftSize == 3) {
+                dest1.setText(zeftMarkers.get(0));
+                dest2.setText(zeftMarkers.get(1));
+                dest3.setText(zeftMarkers.get(2));
+                dest1.setVisibility(View.VISIBLE);
+                dest2.setVisibility(View.VISIBLE);
+                dest3.setVisibility(View.VISIBLE);
+                destIcon1.setVisibility(View.VISIBLE);
+                destIcon2.setVisibility(View.VISIBLE);
+            }
+        }else{
+            if (Markers.size() == 1) {
+                dest1.setText(Markers.get(0));
+                dest1.setVisibility(View.VISIBLE);
+            }
+            if (Markers.size() == 2) {
+                dest1.setText(Markers.get(0));
+                dest2.setText(Markers.get(1));
+                dest1.setVisibility(View.VISIBLE);
+                dest2.setVisibility(View.VISIBLE);
+                destIcon1.setVisibility(View.VISIBLE);
+            }
+            if (Markers.size() == 3) {
+                dest1.setText(Markers.get(0));
+                dest2.setText(Markers.get(1));
+                dest3.setText(Markers.get(2));
+                dest1.setVisibility(View.VISIBLE);
+                dest2.setVisibility(View.VISIBLE);
+                dest3.setVisibility(View.VISIBLE);
+                destIcon1.setVisibility(View.VISIBLE);
+                destIcon2.setVisibility(View.VISIBLE);
+            }
+
         }
     }
 
@@ -772,8 +1017,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     }
 
     public void onModify2(){
+        modifyDestinations = new ArrayList<>();
+        modifyDestinations = tripToBe.getDestinations();
+
+        modifyState = "modifyEdit";
         tripState = "modify";
         appState = "modify";
+
+
         removePolylines();
         recyclerView.getAdapter().notifyDataSetChanged();
         bottomSheet.setVisibility(View.VISIBLE);
@@ -794,11 +1045,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     }
     public void onModify(){
 //        Log.d("FirstMarker",Markers.get(0));
-
+        modifyDestinations = new ArrayList<>();
+        modifyDestinations = tripToBe.getDestinations();
         Markers.clear();
         recyclerView.getAdapter().notifyDataSetChanged();
         DestinationCount =0;
         tripState = "modify";
+        modifyState = "modifyModify";
+
 //        for (int i = 0; i<Markers.size(); i++){
 //            Markers.remove(i);
 //        }
@@ -837,9 +1091,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     }
 
     public void onDestinationArrived(){
+        destCradBtn.setText("Continue");
+        destCardText.setText(" Destination Arrived ");
+        destCard.setVisibility(View.VISIBLE);
+        bottomSheet2.setVisibility(View.GONE);
+        Button Continue=(Button) view.findViewById(R.id.Continue);
+        Continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                destCard.setVisibility(View.GONE);
+                bottomSheet2.setVisibility(View.VISIBLE);
+            }
+        });
         Markers.clear();
+        appState= "DestinationArrived";
         removePolylines();
         edit.setVisibility(View.VISIBLE);
+        Canceltrip.setVisibility(View.VISIBLE);
         //confirmRide.setClickable(true);
         for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
             if(tripToBe.getDestinations().get(i).isArrived()) {
@@ -868,7 +1137,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         //chosenMarkerArrayList.clear();
         setBottomSheets();
         bottomSheet.setVisibility(View.GONE);
-        bottomSheet2.setVisibility(View.VISIBLE);
+        //bottomSheet2.setVisibility(View.VISIBLE);
         tripState = "DestinationArrived";
 
 
@@ -1045,8 +1314,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-
-
         //Log.d("markercb", "ana geet hena");
         if (appState == "initialState" || appState == "modify") {
             if (!Markers.contains(marker.getTitle())) {
@@ -1068,7 +1335,27 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
                     BottomSheetText.setText(marker.getTitle());
                     BottomSheetText.setAlpha((float) 0.87);
-                    DestinationCount++;
+
+
+                    if(appState.equals("modify")) {
+                        Log.d("modDest", DestinationCount +" Mod "+ modifyDestinations.size());
+                        for (int i = 0; i < DestinationCount; i++) {
+                            if (getGucPlaceByLatLng(modifyDestinations.get(i).getLocation()) != marker.getTitle())
+                            {
+                                tmam=true;
+                            }else{
+                                tmam=false;
+                                break;
+                            }
+                        }
+                        if(tmam) {
+                            modifyDestinations.add(new TripDestination(marker.getPosition()));
+                            DestinationCount++;
+                        }
+
+                    }
+                    if(appState == "initialState")
+                        DestinationCount++;
                 } else {
                     Toast.makeText(getContext(), "Maximum destinations reached", Toast.LENGTH_SHORT).show();
                 }
@@ -1077,6 +1364,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             }
 
         }
+//        if(appState.equals("modify")) {
+//            Log.d("modDest", DestinationCount +" Mod "+ modifyDestinations.size());
+//            for (int i = 0; i < DestinationCount; i++) {
+//                if (getGucPlaceByLatLng(modifyDestinations.get(i).getLocation()) != marker.getTitle())
+//                {
+//                    tmam=true;
+//                }else{
+//                    tmam=false;
+//                    break;
+//                }
+//            }
+//            if(tmam)
+//            modifyDestinations.add(new TripDestination(marker.getPosition()));
+//
+//        }
         return true;
     }
 
@@ -1303,6 +1605,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         //ArrayList<LatLng> destinationList = new ArrayList<LatLng>();
         for(int i =0; i<chosenMarkerArrayList.size(); i++){
             newDestinations.add(new TripDestination(chosenMarkerArrayList.get(i).getPosition()));
+
         }
         for (int i=0 ; i < tripToBe.getDestinations().size() ; i++){
             if(tripToBe.getDestinations().get(i).isArrived()){

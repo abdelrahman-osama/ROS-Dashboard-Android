@@ -2,8 +2,10 @@ package com.github.ros_java.test_android.sensor_serial;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -65,6 +67,7 @@ import org.ros.android.view.visualization.layer.LaserScanLayer;
 import org.ros.android.view.visualization.layer.OccupancyGridLayer;
 import org.ros.android.view.visualization.layer.PointCloud2DLayer;
 import org.ros.android.view.visualization.layer.RobotLayer;
+import org.ros.message.MessageListener;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 
@@ -73,6 +76,9 @@ import java.util.List;
 
 import in.unicodelabs.kdgaugeview.KdGaugeView;
 import sensor_msgs.CompressedImage;
+import std_msgs.String;
+
+import static com.github.ros_java.test_android.sensor_serial.Listener.subscriber;
 
 public class VisualizationActivity extends AppCompatRosActivity implements OnMapReadyCallback ,DirectionCallback {
     private static final LatLngBounds GUC_BOUNDS = new LatLngBounds(new LatLng(29.9842014, 31.4387794),
@@ -89,10 +95,14 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
     private LocalBroadcastManager broadcaster;
     Runnable updater;
     static RosImageView<CompressedImage> videoStreamView;
+    static RosImageView<CompressedImage> videoStreamView2;
     private Gson gson;
     boolean drawRoute = false;
     private VisualizationView visualizationView;
     LaserScanLayer x;
+    private java.lang.String speedValue ="0";
+//    Listener listener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +112,7 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
 //        visualizationView = (VisualizationView) findViewById(R.id.lidarView);
-         x = new LaserScanLayer("scan");
+         //x = new LaserScanLayer("scan");
 
 //        visualizationView.onCreate(Lists.<Layer>newArrayList(new PointCloud2DLayer("velodyne_points")));
 
@@ -118,8 +128,10 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
                     if(!drawRoute) {
                        // Log.d("CurrentDestinationLocCB", String.valueOf(MapsFragment.tripToBe.getDestinations().size()));
                         //TODO #3
-                        GetRoutToMarker(MapsFragment.tripToBe.getDestinations().get(currentDestination()).getLocation());
-                        drawRoute = true;
+                        if(MapsFragment.tripToBe.getDestinations()!=null) {
+                            GetRoutToMarker(MapsFragment.tripToBe.getDestinations().get(currentDestination()).getLocation());
+                            drawRoute = true;
+                        }
                     }
                     Log.v("osama", mLastLocation.toString());
                 }
@@ -134,7 +146,30 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
         endButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onEndButton();
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(VisualizationActivity.this);
+                builder1.setMessage("Are you sure you want to cancel your trip?");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                onEndButton();
+                            }
+                        });
+
+                builder1.setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+
             }
         });
 
@@ -159,13 +194,23 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
                 new IntentFilter("FcmData")
         );
         videoStreamView =findViewById(R.id.visualizationImage);
-        videoStreamView.setTopicName("camright/raw/compressed");
+        videoStreamView.setTopicName("camleft/raw/compressed");
         videoStreamView.setMessageType(CompressedImage._TYPE);
         videoStreamView.setMessageToBitmapCallable(new BitmapFromCompressedImage());
 
+        videoStreamView2 =findViewById(R.id.visualizationImage2);
+        videoStreamView2.setTopicName("axis_camera/image_raw/compressed");
+        videoStreamView2.setMessageType(CompressedImage._TYPE);
+        videoStreamView2.setMessageToBitmapCallable(new BitmapFromCompressedImage());
 
 
-
+        subscriber.addMessageListener(new MessageListener<std_msgs.Float32>() {
+            @Override
+            public void onNewMessage(std_msgs.Float32 s) {
+                speedValue = java.lang.String.valueOf((int)s.getData());
+                // Log.d("listener-log","I heard: \"" + s.getData() + "\"");
+            }
+        });
 
 
     }
@@ -185,7 +230,7 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
         updater = new Runnable() {
             @Override
             public void run() {
-                speedMeter.setText(MapsFragment.speedValue);
+                speedMeter.setText(speedValue);
                 timerHandler.postDelayed(updater,1000);
             }
         };
@@ -216,7 +261,7 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
     }
 
     @Override
-    public void onDirectionSuccess(Direction direction, String rawBody) {
+    public void onDirectionSuccess(Direction direction, java.lang.String rawBody) {
         if (direction.isOK()) {
             Route route = direction.getRouteList().get(0);
             ArrayList<LatLng> directionPositionList = route.getLegList().get(0).getDirectionPoint();
@@ -273,9 +318,9 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
-            String status = bundle.getString("EVENT");
-            String carID = bundle.getString("CAR_ID");
-            String tripID=bundle.getString("TRIP_ID");
+            java.lang.String status = bundle.getString("EVENT");
+            java.lang.String carID = bundle.getString("CAR_ID");
+            java.lang.String tripID=bundle.getString("TRIP_ID");
             switch (status) {
 
                 case "START":
@@ -298,12 +343,14 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
 
 
     public  void removePolylines() {
-        if (polylines.size() > 0) {
-            for (Polyline poly : polylines) {
-                poly.remove();
+        if(polylines!=null) {
+            if (polylines.size() > 0) {
+                for (Polyline poly : polylines) {
+                    poly.remove();
+                }
             }
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLastLocation));
         }
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLastLocation));
     }
 
     public void modifyFromServer(){
@@ -356,7 +403,7 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
 
         this.finish();
         removePolylines();
-        String cancelUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/end/tablet/hadwa";
+        java.lang.String cancelUrl = "https://sdc-api-gateway.herokuapp.com/car/trip/end/tablet/hadwa";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
                 (Request.Method.GET, cancelUrl, null, new Response.Listener<JSONArray>() {
 
@@ -465,17 +512,26 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
+
            }
+
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
-//        visualizationView.init(nodeMainExecutor);
-        //TODO 3ayzeen nsheel dih heya w 7agtha
-//        nodeConfiguration.setNodeName("camright/raw");
-        nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
-//        nodeMainExecutor.execute(visualizationView, nodeConfiguration);
-//        Log.d("Lidar", x.getFrame().toString());
+        nodeConfiguration.setNodeName("node1");
+        nodeMainExecutor.execute(videoStreamView2, nodeConfiguration);
+
+
+//        NodeConfiguration nodeConfiguration2 = NodeConfiguration.newPublic(getRosHostname());
+//        nodeConfiguration2.setMasterUri(getMasterUri());
+//        nodeConfiguration.setNodeName("node2");
+//        nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
+//
+
+
+
+
     }
 }
