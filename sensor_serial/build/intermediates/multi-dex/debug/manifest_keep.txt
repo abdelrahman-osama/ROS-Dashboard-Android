@@ -1,3 +1,0 @@
-# Referenced at /Users/abdelrahman/StudioProjects/ros_android_sensors/sensor_serial/build/intermediates/manifests/full/debug/AndroidManifest.xml:57
--keep class android.support.multidex.MultiDexApplication { <init>(...); }
-

@@ -154,6 +154,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
                 for (int i = fromPos; i < toPos; i++) {
                 Collections.swap(Markers, i, i + 1);
                 Collections.swap(chosenMarkerArrayList.getList(), i, i + 1);
+                if(appState.equals("modify"))
                 Collections.swap(modifyDestinations, i, i+1);
 
                 }
@@ -161,6 +162,7 @@ public class RecyclerListAdapter extends RecyclerView.Adapter<RecyclerListAdapte
                 for (int i = fromPos; i > toPos; i--) {
                     Collections.swap(Markers, i, i - 1);
                     Collections.swap(chosenMarkerArrayList.getList(), i, i -1);
+                    if(appState.equals("modify"))
                     Collections.swap(modifyDestinations,i, i-1);
                 }
             }

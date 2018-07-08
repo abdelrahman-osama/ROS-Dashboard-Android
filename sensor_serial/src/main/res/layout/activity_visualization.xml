@@ -24,23 +24,23 @@
 
     <org.ros.android.view.RosImageView
         android:id="@+id/visualizationImage"
-        android:layout_width="640dp"
-        android:layout_height="800dp"
-        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:cropToPadding="true"
         android:scaleType="fitXY"
         android:src="@null" />
 
-    <org.ros.android.view.RosImageView
-        android:id="@+id/visualizationImage2"
-        android:layout_width="640dp"
-        android:layout_height="800dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:cropToPadding="true"
-        android:scaleType="fitXY"
-        android:src="@null"/>
+    <!--<org.ros.android.view.RosImageView-->
+        <!--android:id="@+id/visualizationImage2"-->
+        <!--android:layout_width="640dp"-->
+        <!--android:layout_height="800dp"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:cropToPadding="true"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@null"/>-->
 
 
     <TextView
@@ -175,8 +175,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/unit"
-        android:layout_marginBottom="58dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="57dp"
+        android:layout_marginEnd="30dp"
         android:background="@null"
         android:elevation="10dp"
         android:src="@drawable/ic_cancel" />
@@ -187,24 +188,44 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/cancelButton"
-        android:layout_marginEnd="252dp"
-        android:background="@null"
-        android:elevation="10dp"
-        android:src="@drawable/ic_edit"
-        />
-
-    <ImageButton
-        android:id="@+id/arriveDestination"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/cancelButton"
-        android:layout_marginEnd="400dp"
+        android:layout_marginEnd="149dp"
         android:background="@null"
         android:elevation="10dp"
         android:src="@drawable/ic_edit" />
 
+    <ImageButton
+        android:id="@+id/arriveDestination"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/cancelButton"
+        android:layout_marginBottom="173dp"
+        android:background="@null"
+        android:elevation="10dp"
+        android:src="@null" />
 
+
+    <ImageButton
+        android:id="@+id/switchView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/cancelButton"
+        android:layout_marginEnd="275dp"
+        android:background="@null"
+        android:elevation="10dp"
+        android:src="@drawable/ic_switch_button" />
+
+    <ImageButton
+        android:id="@+id/emergencyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/cancelButton"
+        android:layout_marginStart="345dp"
+        android:background="@null"
+        android:elevation="10dp"
+        android:src="@drawable/ic_ebutton" />
 
 
 </RelativeLayout>

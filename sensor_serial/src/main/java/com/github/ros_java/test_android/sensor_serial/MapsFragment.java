@@ -684,6 +684,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
                                                         dialog.cancel();
                                                         createTrip();
+                                                        std_msgs.String tr = Talker.destPublisher.newMessage();
+                                                        tr.setData(Markers.get(0));
+                                                        Talker.destPublisher.publish(tr);
                                                     }
                                                 });
                                         AlertDialog alert15 = builder5.create();
@@ -719,6 +722,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
                                         confirmModify();
+                                        std_msgs.String tr = Talker.destPublisher.newMessage();
+                                        tr.setData(getGucPlaceByLatLng(tripToBe.getDestinations().get(VisualizationActivity.currentDestination()).getLocation())
+                                                );
+                                        Talker.destPublisher.publish(tr);
                                         if(!localTrip){
                                             notifyServerOnContinueTrip();
                                         }
@@ -750,6 +757,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
+                                        std_msgs.String tr = Talker.destPublisher.newMessage();
+                                        tr.setData(getGucPlaceByLatLng(tripToBe.getDestinations().get(0).getLocation())
+                                        );
+                                        Talker.destPublisher.publish(tr);
                                         notifyServerOnStartTrip();
                                         startActivity(visualizationIntent);
                                         getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
@@ -783,6 +794,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                         dialog.cancel();
                                         appState="DestinationArrived";
                                         notifyServerOnContinueTrip();
+                                        std_msgs.String tr = Talker.destPublisher.newMessage();
+                                        tr.setData(getGucPlaceByLatLng(tripToBe.getDestinations().get(VisualizationActivity.currentDestination()).getLocation())
+                                        );
+                                        Talker.destPublisher.publish(tr);
                                         startActivity(visualizationIntent);
                                         getActivity().getSupportFragmentManager().beginTransaction().remove(MapsFragment.this);
                                     }
@@ -906,19 +921,34 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             TextView dest1 = (TextView) view.findViewById(R.id.dest1);
             TextView dest2 = (TextView) view.findViewById(R.id.dest2);
             TextView dest3 = (TextView) view.findViewById(R.id.dest3);
-            TextView dest4 = (TextView) view.findViewById(R.id.dest4);
+
+            ImageView destI1 = (ImageView) view.findViewById(R.id.dest_i1);
+            ImageView destI2 = (ImageView) view.findViewById(R.id.dest_i2);
+            ImageView destI3 = (ImageView) view.findViewById(R.id.dest_i3);
+
 
             ImageView destIcon1 = (ImageView) view.findViewById(R.id.dest_icon1);
             ImageView destIcon2 = (ImageView) view.findViewById(R.id.dest_icon2);
-            ImageView destIcon3 = (ImageView) view.findViewById(R.id.dest_icon3);
 
-            dest1.setVisibility(View.GONE);
-            dest2.setVisibility(View.GONE);
-            dest3.setVisibility(View.GONE);
-            dest4.setVisibility(View.GONE);
+            LinearLayout destC1 = (LinearLayout) view.findViewById(R.id.dest_c1);
+            LinearLayout destC2 = (LinearLayout) view.findViewById(R.id.dest_c2);
+            LinearLayout destC3 = (LinearLayout) view.findViewById(R.id.dest_c3);
+
+//            dest1.setVisibility(View.GONE);
+//            dest2.setVisibility(View.GONE);
+//            dest3.setVisibility(View.GONE);
+
             destIcon1.setVisibility(View.GONE);
             destIcon2.setVisibility(View.GONE);
-            destIcon3.setVisibility(View.GONE);
+
+//            destI1.setVisibility(View.GONE);
+//            destI2.setVisibility(View.GONE);
+//            destI3.setVisibility(View.GONE);
+
+            destC1.setVisibility(View.GONE);
+            destC2.setVisibility(View.GONE);
+            destC3.setVisibility(View.GONE);
+
         Log.d("zeftState", appState);
         if(appState.equals("DestinationArrived") || appState.equals("modify")) {
             int zeftSize = 0;
@@ -946,44 +976,68 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
             if (zeftSize == 1) {
                 dest1.setText(zeftMarkers.get(0));
-                dest1.setVisibility(View.VISIBLE);
+//                dest1.setVisibility(View.VISIBLE);
+//                destI1.setVisibility(View.VISIBLE);
+                destC1.setVisibility(View.VISIBLE);
             }
             if (zeftSize == 2) {
                 dest1.setText(zeftMarkers.get(0));
                 dest2.setText(zeftMarkers.get(1));
-                dest1.setVisibility(View.VISIBLE);
-                dest2.setVisibility(View.VISIBLE);
+                destC1.setVisibility(View.VISIBLE);
+                destC2.setVisibility(View.VISIBLE);
+//                dest1.setVisibility(View.VISIBLE);
+//                dest2.setVisibility(View.VISIBLE);
+//                destI1.setVisibility(View.VISIBLE);
+//                destI2.setVisibility(View.VISIBLE);
                 destIcon1.setVisibility(View.VISIBLE);
             }
             if (zeftSize == 3) {
                 dest1.setText(zeftMarkers.get(0));
                 dest2.setText(zeftMarkers.get(1));
                 dest3.setText(zeftMarkers.get(2));
-                dest1.setVisibility(View.VISIBLE);
-                dest2.setVisibility(View.VISIBLE);
-                dest3.setVisibility(View.VISIBLE);
+                destC1.setVisibility(View.VISIBLE);
+                destC2.setVisibility(View.VISIBLE);
+                destC3.setVisibility(View.VISIBLE);
+//                dest1.setVisibility(View.VISIBLE);
+//                dest2.setVisibility(View.VISIBLE);
+//                dest3.setVisibility(View.VISIBLE);
+//                destI1.setVisibility(View.VISIBLE);
+//                destI2.setVisibility(View.VISIBLE);
+//                destI3.setVisibility(View.VISIBLE);
                 destIcon1.setVisibility(View.VISIBLE);
                 destIcon2.setVisibility(View.VISIBLE);
             }
         }else{
             if (Markers.size() == 1) {
                 dest1.setText(Markers.get(0));
-                dest1.setVisibility(View.VISIBLE);
+                destC1.setVisibility(View.VISIBLE);
+//                dest1.setVisibility(View.VISIBLE);
+//                destI1.setVisibility(View.VISIBLE);
             }
             if (Markers.size() == 2) {
                 dest1.setText(Markers.get(0));
                 dest2.setText(Markers.get(1));
-                dest1.setVisibility(View.VISIBLE);
-                dest2.setVisibility(View.VISIBLE);
+                destC1.setVisibility(View.VISIBLE);
+                destC2.setVisibility(View.VISIBLE);
+//                dest1.setVisibility(View.VISIBLE);
+//                dest2.setVisibility(View.VISIBLE);
+//                destI1.setVisibility(View.VISIBLE);
+//                destI2.setVisibility(View.VISIBLE);
                 destIcon1.setVisibility(View.VISIBLE);
             }
             if (Markers.size() == 3) {
                 dest1.setText(Markers.get(0));
                 dest2.setText(Markers.get(1));
                 dest3.setText(Markers.get(2));
-                dest1.setVisibility(View.VISIBLE);
-                dest2.setVisibility(View.VISIBLE);
-                dest3.setVisibility(View.VISIBLE);
+                destC1.setVisibility(View.VISIBLE);
+                destC2.setVisibility(View.VISIBLE);
+                destC3.setVisibility(View.VISIBLE);
+//                dest1.setVisibility(View.VISIBLE);
+//                dest2.setVisibility(View.VISIBLE);
+//                dest3.setVisibility(View.VISIBLE);
+//                destI1.setVisibility(View.VISIBLE);
+//                destI2.setVisibility(View.VISIBLE);
+//                destI3.setVisibility(View.VISIBLE);
                 destIcon1.setVisibility(View.VISIBLE);
                 destIcon2.setVisibility(View.VISIBLE);
             }
@@ -1510,53 +1564,66 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                                     TextView dest1 = (TextView) getActivity().findViewById(R.id.dest1);
                                     TextView dest2 = (TextView) getActivity().findViewById(R.id.dest2);
                                     TextView dest3 = (TextView) getActivity().findViewById(R.id.dest3);
-                                    TextView dest4 = (TextView) getActivity().findViewById(R.id.dest4);
 
                                     ImageView destIcon1 = (ImageView) getActivity().findViewById(R.id.dest_icon1);
                                     ImageView destIcon2 = (ImageView) getActivity().findViewById(R.id.dest_icon2);
-                                    ImageView destIcon3 = (ImageView) getActivity().findViewById(R.id.dest_icon3);
 
-                                    dest1.setVisibility(View.GONE);
-                                    dest2.setVisibility(View.GONE);
-                                    dest3.setVisibility(View.GONE);
-                                    dest4.setVisibility(View.GONE);
+                                    ImageView destI1 = (ImageView) getActivity().findViewById(R.id.dest_i1);
+                                    ImageView destI2 = (ImageView) getActivity().findViewById(R.id.dest_i2);
+                                    ImageView destI3 = (ImageView) getActivity().findViewById(R.id.dest_i3);
+
+                                    LinearLayout destC1 = (LinearLayout) getActivity().findViewById(R.id.dest_c1);
+                                    LinearLayout destC2 = (LinearLayout) getActivity().findViewById(R.id.dest_c2);
+                                    LinearLayout destC3 = (LinearLayout) getActivity().findViewById(R.id.dest_c3);
+                                    //===========TextView bta3 el destinations====
+//                                    dest1.setVisibility(View.GONE);
+//                                    dest2.setVisibility(View.GONE);
+//                                    dest3.setVisibility(View.GONE);
+                                    //==============el fawasel el fl nos==========
                                     destIcon1.setVisibility(View.GONE);
                                     destIcon2.setVisibility(View.GONE);
-                                    destIcon3.setVisibility(View.GONE);
+                                    //================el blue markers=============
+//                                    destI1.setVisibility(View.GONE);
+//                                    destI2.setVisibility(View.GONE);
+//                                    destI3.setVisibility(View.GONE);
+
+                                    destC1.setVisibility(View.GONE);
+                                    destC2.setVisibility(View.GONE);
+                                    destC3.setVisibility(View.GONE);
+
 
                                     if (Markers.size() == 1) {
                                         dest1.setText(Markers.get(0));
-                                        dest1.setVisibility(View.VISIBLE);
+                                        destC1.setVisibility(View.VISIBLE);
+//                                        dest1.setVisibility(View.VISIBLE);
+//                                        destI1.setVisibility(View.VISIBLE);
                                     }
                                     if (Markers.size() == 2) {
                                         dest1.setText(Markers.get(0));
                                         dest2.setText(Markers.get(1));
-                                        dest1.setVisibility(View.VISIBLE);
-                                        dest2.setVisibility(View.VISIBLE);
+                                        destC1.setVisibility(View.VISIBLE);
+                                        destC2.setVisibility(View.VISIBLE);
+//                                        dest1.setVisibility(View.VISIBLE);
+//                                        dest2.setVisibility(View.VISIBLE);
+//                                        destI1.setVisibility(View.VISIBLE);
+//                                        destI2.setVisibility(View.VISIBLE);
                                         destIcon1.setVisibility(View.VISIBLE);
                                     }
                                     if (Markers.size() == 3) {
                                         dest1.setText(Markers.get(0));
                                         dest2.setText(Markers.get(1));
                                         dest3.setText(Markers.get(2));
-                                        dest1.setVisibility(View.VISIBLE);
-                                        dest2.setVisibility(View.VISIBLE);
-                                        dest3.setVisibility(View.VISIBLE);
+                                        destC1.setVisibility(View.VISIBLE);
+                                        destC2.setVisibility(View.VISIBLE);
+                                        destC3.setVisibility(View.VISIBLE);
+//                                        dest1.setVisibility(View.VISIBLE);
+//                                        dest2.setVisibility(View.VISIBLE);
+//                                        dest3.setVisibility(View.VISIBLE);
+//                                        destI1.setVisibility(View.VISIBLE);
+//                                        destI2.setVisibility(View.VISIBLE);
+//                                        destI3.setVisibility(View.VISIBLE);
                                         destIcon1.setVisibility(View.VISIBLE);
                                         destIcon2.setVisibility(View.VISIBLE);
-                                    }
-                                    if (Markers.size() == 4) {
-                                        dest1.setText(Markers.get(0));
-                                        dest2.setText(Markers.get(1));
-                                        dest3.setText(Markers.get(2));
-                                        dest4.setText(Markers.get(3));
-                                        dest1.setVisibility(View.VISIBLE);
-                                        dest2.setVisibility(View.VISIBLE);
-                                        dest3.setVisibility(View.VISIBLE);
-                                        dest4.setVisibility(View.VISIBLE);
-                                        destIcon1.setVisibility(View.VISIBLE);
-                                        destIcon2.setVisibility(View.VISIBLE);
-                                        destIcon3.setVisibility(View.VISIBLE);
                                     }
 
 

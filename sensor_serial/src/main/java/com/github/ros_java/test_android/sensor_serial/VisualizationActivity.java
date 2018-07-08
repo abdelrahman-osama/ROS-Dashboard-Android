@@ -67,6 +67,7 @@ import org.ros.android.view.visualization.layer.LaserScanLayer;
 import org.ros.android.view.visualization.layer.OccupancyGridLayer;
 import org.ros.android.view.visualization.layer.PointCloud2DLayer;
 import org.ros.android.view.visualization.layer.RobotLayer;
+import org.ros.internal.message.RawMessage;
 import org.ros.message.MessageListener;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
@@ -76,8 +77,10 @@ import java.util.List;
 
 import in.unicodelabs.kdgaugeview.KdGaugeView;
 import sensor_msgs.CompressedImage;
+import std_msgs.Int32;
 import std_msgs.String;
 
+import static com.github.ros_java.test_android.sensor_serial.Listener.errorSub;
 import static com.github.ros_java.test_android.sensor_serial.Listener.subscriber;
 
 public class VisualizationActivity extends AppCompatRosActivity implements OnMapReadyCallback ,DirectionCallback {
@@ -101,6 +104,8 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
     private VisualizationView visualizationView;
     LaserScanLayer x;
     private java.lang.String speedValue ="0";
+    boolean viewMode;
+    int errorCode;
 //    Listener listener;
 
     @Override
@@ -190,19 +195,104 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
             }
         });
 
+        ImageButton swView = findViewById(R.id.switchView);
+        swView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchView();
+            }
+        });
+
+        ImageButton emergencyButton = findViewById(R.id.emergencyButton);
+        emergencyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                emergencyButton();
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(VisualizationActivity.this);
+                builder1.setMessage("Emergency Button Pressed!");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+
+
+            }
+        });
+
         LocalBroadcastManager.getInstance(this).registerReceiver((mMessageReceiver),
                 new IntentFilter("FcmData")
         );
         videoStreamView =findViewById(R.id.visualizationImage);
-        videoStreamView.setTopicName("camleft/raw/compressed");
+        videoStreamView.setTopicName("axis_camera/image_raw/compressed");
         videoStreamView.setMessageType(CompressedImage._TYPE);
         videoStreamView.setMessageToBitmapCallable(new BitmapFromCompressedImage());
 
-        videoStreamView2 =findViewById(R.id.visualizationImage2);
-        videoStreamView2.setTopicName("axis_camera/image_raw/compressed");
-        videoStreamView2.setMessageType(CompressedImage._TYPE);
-        videoStreamView2.setMessageToBitmapCallable(new BitmapFromCompressedImage());
 
+//        videoStreamView2 =findViewById(R.id.visualizationImage2);
+//        videoStreamView2.setTopicName("axis_camera/image_raw/compressed");
+//        videoStreamView2.setMessageType(CompressedImage._TYPE);
+//        videoStreamView2.setMessageToBitmapCallable(new BitmapFromCompressedImage());
+
+        errorSub.addMessageListener(new MessageListener<Int32>() {
+            @Override
+            public void onNewMessage(Int32 int32) {
+                errorCode = int32.getData();
+                switch(errorCode){
+                    case 501 :
+                        Log.d("errorCode", java.lang.String.valueOf(501));
+                        VisualizationActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(VisualizationActivity.this);
+                                builder1.setMessage("System Error 501, please check the steering system!");
+                                builder1.setCancelable(true);
+
+                                builder1.setPositiveButton(
+                                        "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alert11 = builder1.create();
+                                alert11.show();
+                            }
+                        });
+                        errorCode = 0;
+                        break;
+                    case 502 :
+
+                        VisualizationActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlertDialog.Builder builder2 = new AlertDialog.Builder(VisualizationActivity.this);
+                                builder2.setMessage("System Error 502, please check the throttle system!");
+                                builder2.setCancelable(true);
+                                builder2.setPositiveButton(
+                                        "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alert12 = builder2.create();
+                                alert12.show();
+                            }
+                        });
+                        errorCode = 0;
+                        break;
+                }
+            }
+        });
 
         subscriber.addMessageListener(new MessageListener<std_msgs.Float32>() {
             @Override
@@ -211,7 +301,6 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
                 // Log.d("listener-log","I heard: \"" + s.getData() + "\"");
             }
         });
-
 
     }
 
@@ -515,17 +604,52 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
 
            }
 
+     public void switchView(){
+//         videoStreamView =findViewById(R.id.visualizationImage);
+//         videoStreamView.setTopicName("camleft/raw/compressed");
+//         videoStreamView.setMessageType(CompressedImage._TYPE);
+//         videoStreamView.setMessageToBitmapCallable(new BitmapFromCompressedImage());
+
+//        videoStreamView2 =findViewById(R.id.visualizationImage2);
+//        videoStreamView2.setTopicName("axis_camera/image_raw/compressed");
+//        videoStreamView2.setMessageType(CompressedImage._TYPE);
+//        videoStreamView2.setMessageToBitmapCallable(new BitmapFromCompressedImage());
+
+
+         if(viewMode){
+            viewMode = false;
+            videoStreamView.setTopicName("axis_camera/image_raw/compressed");
+            init(nodeMainExecutorService);
+        }else{
+            viewMode = true;
+             videoStreamView.setTopicName("camleft/raw/compressed");
+            init(nodeMainExecutorService);
+        }
+     }
+
+     public void emergencyButton(){
+        std_msgs.String x = Talker.publisher.newMessage();
+        x.setData("emergency");
+        Talker.publisher.publish(x);
+     }
 
     @Override
     protected void init(NodeMainExecutor nodeMainExecutor) {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
         nodeConfiguration.setNodeName("node1");
-        nodeMainExecutor.execute(videoStreamView2, nodeConfiguration);
+        if(viewMode) {
+            nodeMainExecutor.shutdownNodeMain(videoStreamView);
+            nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
+        }else{
+            //nodeConfiguration.setNodeName("node2");
+            nodeMainExecutor.shutdownNodeMain(videoStreamView);
+            nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
+
+        }
 
 
-//        NodeConfiguration nodeConfiguration2 = NodeConfiguration.newPublic(getRosHostname());
-//        nodeConfiguration2.setMasterUri(getMasterUri());
+
 //        nodeConfiguration.setNodeName("node2");
 //        nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
 //

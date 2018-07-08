@@ -16,29 +16,31 @@ public class Talker extends AbstractNodeMain {
     public GraphName getDefaultNodeName() {
         return GraphName.of("rosjava/talker");
     }
-
+    static Publisher<std_msgs.String> publisher;
+    static Publisher<std_msgs.String> destPublisher;
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        final Publisher<std_msgs.String> publisher =
-                connectedNode.newPublisher("chatter", std_msgs.String._TYPE);
+
+        publisher = connectedNode.newPublisher("wirelessEmergency", std_msgs.String._TYPE);
+        destPublisher = connectedNode.newPublisher("destinations", std_msgs.String._TYPE);
         // This CancellableLoop will be canceled automatically when the node shuts
         // down.
-        connectedNode.executeCancellableLoop(new CancellableLoop() {
-            private int sequenceNumber;
-
-            @Override
-            protected void setup() {
-                sequenceNumber = 0;
-            }
-
-            @Override
-            protected void loop() throws InterruptedException {
-                std_msgs.String str = publisher.newMessage();
-                str.setData(sequenceNumber+"");
-                publisher.publish(str);
-                sequenceNumber++;
-                Thread.sleep(1000);
-            }
-        });
+//        connectedNode.executeCancellableLoop(new CancellableLoop() {
+//            private int sequenceNumber;
+//
+//            @Override
+//            protected void setup() {
+//                sequenceNumber = 0;
+//            }
+//
+//            @Override
+//            protected void loop() throws InterruptedException {
+////                std_msgs.String str = publisher.newMessage();
+////                str.setData(sequenceNumber+"");
+////                publisher.publish(str);
+////                sequenceNumber++;
+////                Thread.sleep(1000);
+//            }
+//        });
     }
 }

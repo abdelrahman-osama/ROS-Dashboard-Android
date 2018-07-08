@@ -25,6 +25,7 @@ import org.ros.node.NodeMain;
 import org.ros.node.topic.Subscriber;
 
 import sensor_msgs.Image;
+import std_msgs.Int32;
 
 /**
  * A simple {@link Subscriber} {@link NodeMain}.
@@ -32,6 +33,7 @@ import sensor_msgs.Image;
 public class Listener extends AbstractNodeMain {
 
   static Subscriber<std_msgs.Float32> subscriber;
+  static Subscriber<std_msgs.Int32> errorSub;
 
   @Override
   public GraphName getDefaultNodeName() {
@@ -42,6 +44,7 @@ public class Listener extends AbstractNodeMain {
   public void onStart(ConnectedNode connectedNode) {
     final Log log = connectedNode.getLog();
     subscriber = connectedNode.newSubscriber("estimated_vel_kmph", std_msgs.Float32._TYPE);
+    errorSub = connectedNode.newSubscriber("diagnostic_system", Int32._TYPE );
 //    subscriber.addMessageListener(new MessageListener<std_msgs.String>() {
 //      @Override
 //      public void onNewMessage(std_msgs.String message) {
