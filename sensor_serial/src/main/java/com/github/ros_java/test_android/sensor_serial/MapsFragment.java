@@ -124,7 +124,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     static TextView BottomSheetText;
     private View view;
     static List<java.lang.String> Markers;
-    RecyclerView recyclerView;
+    static RecyclerView recyclerView;
     public static int DestinationCount = 0;
     View cardLayout;
     private int backpress;
@@ -199,6 +199,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
 
+        bottomSheet = (LinearLayout) view.findViewById(R.id.BottomSheet_layout);
+        bottomSheet2 = (LinearLayout) view.findViewById(R.id.BottomSheet_layout2);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -231,7 +234,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 //               // Log.d("listener-log","I heard: \"" + s.getData() + "\"");
 //            }
 //        });
-
 
 
         return view;
@@ -289,11 +291,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
     }
 
-    public void onReset(){
+    public static void onReset(){
         tripState = "localTrip";
         Markers.clear();
         tripToBe = new Trip();
         DestinationCount=0;
+        confirmRide.setClickable(true);
         recyclerView.getAdapter().notifyDataSetChanged();
        // Log.d("dodo", "size:" + chosenMarkerArrayList.size());
         for (int i=0 ;i<chosenMarkerArrayList.size();i++) {
@@ -319,6 +322,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
         removePolylines();
         bottomSheet.setVisibility(View.VISIBLE);
         bottomSheet2.setVisibility(View.GONE);
+
 
     }
 
@@ -362,7 +366,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             public void onClick(View v) {
                 destCard.setVisibility(View.GONE);
                 onReset();
-
+                getActivity().onBackPressed();
 //                destCard.setVisibility(View.GONE);
 //                bottomSheet2.setVisibility(View.VISIBLE);
             }
@@ -552,78 +556,60 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
                     if (isInternetAvailable()) {
                         if (isGpsAvailable(getContext())) {
                                 if (Markers.size() > 0) {
-//                        if(appState.equals("routeReady")) {
-//                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//                                @Override
-//                                public boolean onMarkerClick(Marker marker) {
-//                                    return true;
-//                                }
-//                            });
-//                        }
-                                    if(tripState == "remoteTrip"){
 
-//                                        List<TripDestination> newDestinations = new ArrayList<>();
-//
-//                                        for(int i =0; i<Markers.size(); i++){
-//
-//                                            newDestinations.add(new TripDestination(pinLocations.get(Markers.get(i))));
-//
-//                                        }
-//
-//
-//                                        Trip modifiedTrip = new Trip();
-//                                        modifiedTrip.setDestinations(newDestinations);
-//                                        java.lang.String url = "https://sdc-api-gateway.herokuapp.com/car/trip/change/tablet/hadwa";
-//                                        java.lang.String str = gson.toJson(modifiedTrip);
-//                                        JSONObject trip = new JSONObject();
-//                                        try {
-//                                            trip = new JSONObject(str);
-//                                        } catch (JSONException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                        JsonObjectRequest tripRequest = new JsonObjectRequest
-//                                                (Request.Method.POST, url, trip, new Response.Listener<JSONObject>() {
-//
-//                                                    @Override
-//                                                    public void onResponse(JSONObject response) {
-//                                                        Log.v("EDITDESTINATION", response.toString());
-//                                                        Trip tripp = gson.fromJson(response.toString(), Trip.class);
-//
-//
-//
-//                                                    }
-//                                                }, new Response.ErrorListener() {
-//
-//                                                    @Override
-//                                                    public void onErrorResponse(VolleyError error) {
-//
-//                                                    }
-//                                                });
-//
-//                                        MySingleton.getInstance(getContext()).addToRequestQueue(tripRequest);
-
-
-
-
-
-                                    }
                                     if(appState.equals("modify"))
                                     {
-                                        edit.setVisibility(View.VISIBLE);
-                                        Canceltrip.setVisibility(View.VISIBLE);
+                                        if(!modifyDestinations.get(modifyDestinations.size()-1).isArrived()) {
+                                            edit.setVisibility(View.VISIBLE);
+                                            Canceltrip.setVisibility(View.VISIBLE);
 
-                                        if(!(VisualizationActivity.currentDestination() >= chosenMarkerArrayList.size())) {
-                                            GetRoutToMarker(chosenMarkerArrayList.get(VisualizationActivity.currentDestination()).getPosition());
+                                            setBottomSheets();
+                                            bottomSheet.setVisibility(View.GONE);
+                                            bottomSheet2.setVisibility(View.VISIBLE);
+                                            if (appState.equals("initialState"))
+                                                appState = "routeReady";
+
+                                            if (!(VisualizationActivity.currentDestination() >= chosenMarkerArrayList.size())) {
+                                                GetRoutToMarker(chosenMarkerArrayList.get(VisualizationActivity.currentDestination()).getPosition());
+                                            }
+                                        }
+                                        else{
+                                            AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+                                            builder2.setMessage("Are you sure you want to confirm your modifications? Your trip will be cancelled.");
+                                            builder2.setCancelable(true);
+
+                                            builder2.setPositiveButton(
+                                                    "Yes",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int id) {
+                                                            bottomSheet.setVisibility(View.GONE);
+                                                            onFinalDestinationArrived();
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+
+                                            builder2.setNegativeButton(
+                                                    "No",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int id) {
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+
+                                            AlertDialog alert2 = builder2.create();
+                                            alert2.show();
                                         }
 
                                     }else {
                                         GetRoutToMarker(pinLocations.get(Markers.get(0)));
+                                        setBottomSheets();
+                                        bottomSheet.setVisibility(View.GONE);
+                                        bottomSheet2.setVisibility(View.VISIBLE);
+                                        if (appState.equals("initialState"))
+                                            appState = "routeReady";
                                     }
-                                    setBottomSheets();
-                                    bottomSheet.setVisibility(View.GONE);
-                                    bottomSheet2.setVisibility(View.VISIBLE);
-                                    if(appState.equals("initialState"))
-                                    appState = "routeReady";
+
+
                                     //this can't be from tripToBe as it is still null
 
 
@@ -639,9 +625,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
 
                     }
                 }else{
+                    Log.d("gpssss","");
+                    CheckGPS();
                     createLocationRequest();
                     startLocationUpdates();
-                    CheckGPS();
+
                     //Toast.makeText(getContext(), "Location service failed..", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -915,8 +903,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
     public void setBottomSheets(){
 
 
-            bottomSheet = (LinearLayout) view.findViewById(R.id.BottomSheet_layout);
-            bottomSheet2 = (LinearLayout) view.findViewById(R.id.BottomSheet_layout2);
+
             destCard = (CardView) view.findViewById(R.id.destCard);
             TextView dest1 = (TextView) view.findViewById(R.id.dest1);
             TextView dest2 = (TextView) view.findViewById(R.id.dest2);
@@ -1887,4 +1874,5 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, View.O
             setCarAvailability(true);
         }
     }
+
 }

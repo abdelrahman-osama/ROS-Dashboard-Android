@@ -103,6 +103,14 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCZ5TH2mfl26LqDq6kkVbo85gLPZ9fmaik" />
+
+        <activity
+            android:name="com.github.ros_java.test_android.sensor_serial.CamLidarVisualization"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.github.ros_java.test_android.sensor_serial.LandingScreen"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="android.support.VERSION"
             android:value="26.1.0" />

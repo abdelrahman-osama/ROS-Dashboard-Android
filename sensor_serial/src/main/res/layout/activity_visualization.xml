@@ -43,20 +43,6 @@
         <!--android:src="@null"/>-->
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="330dp"
-        android:layout_marginTop="115dp"
-        android:text="ANGLE"
-        android:shadowColor="@color/Black"
-        android:shadowRadius="2"
-        android:textColor="@color/colorPrimary"
-        android:textSize="25dp" />
-
     <!--<fragment-->
     <!--android:id="@+id/fragment"-->
     <!--android:name="com.example.hadwa.myapplication.MapsFragment"-->
@@ -77,34 +63,19 @@
         android:layout_marginStart="34dp"
         android:layout_weight="3" />
 
-    <TextView
-        android:id="@+id/degree"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="302dp"
-        android:layout_marginTop="14dp"
-        android:text="90°"
-        android:textColor="@color/colorPrimary"
-        android:shadowColor="@color/Black"
-        android:shadowRadius="2"
-        android:elevation="4dp"
-        android:textSize="80dp" />
-
 
     <TextView
         android:id="@+id/speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/degree"
-        android:layout_marginEnd="110dp"
-        android:text="20"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/unit"
+        android:layout_marginTop="19dp"
         android:elevation="4dp"
-        android:textColor="@color/colorPrimary"
         android:shadowColor="@color/Black"
         android:shadowRadius="2"
+        android:text="20"
+        android:textColor="@color/colorPrimary"
         android:textSize="80dp" />
 
 

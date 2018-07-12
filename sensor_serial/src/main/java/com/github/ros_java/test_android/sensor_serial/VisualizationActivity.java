@@ -103,7 +103,7 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
     boolean drawRoute = false;
     private VisualizationView visualizationView;
     LaserScanLayer x;
-    private java.lang.String speedValue ="0";
+    private java.lang.String speedValue ="7";
     boolean viewMode;
     int errorCode;
 //    Listener listener;
@@ -590,12 +590,30 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
 
 
     public void onModify(){
+        if(MapsFragment.tripToBe.getDestinations().size()-1 == currentDestination()){
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(VisualizationActivity.this);
+            builder1.setMessage("You can't modify your last destination, you can only cancel.");
+            builder1.setCancelable(true);
 
-        MapsFragment.confirmRide.setClickable(true);
-        Intent intent = new Intent("onEnd");
-        intent.putExtra("EVENT", "Modify");
-        broadcaster.sendBroadcast(intent);
-        this.finish();
+            builder1.setPositiveButton(
+                    "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            // onEndButton();
+                        }
+                    });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+        }else{
+            MapsFragment.confirmRide.setClickable(true);
+            Intent intent = new Intent("onEnd");
+            intent.putExtra("EVENT", "Modify");
+            broadcaster.sendBroadcast(intent);
+            this.finish();
+        }
+
+
     }
 
     @Override
@@ -622,7 +640,7 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
             init(nodeMainExecutorService);
         }else{
             viewMode = true;
-             videoStreamView.setTopicName("camleft/raw/compressed");
+             videoStreamView.setTopicName("pg_15405694/image_raw/processed");
             init(nodeMainExecutorService);
         }
      }
@@ -638,15 +656,9 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
         nodeConfiguration.setNodeName("node1");
-        if(viewMode) {
-            nodeMainExecutor.shutdownNodeMain(videoStreamView);
-            nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
-        }else{
-            //nodeConfiguration.setNodeName("node2");
-            nodeMainExecutor.shutdownNodeMain(videoStreamView);
-            nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
+        nodeMainExecutor.shutdownNodeMain(videoStreamView);
+        nodeMainExecutor.execute(videoStreamView, nodeConfiguration);
 
-        }
 
 
 
@@ -658,4 +670,5 @@ public class VisualizationActivity extends AppCompatRosActivity implements OnMap
 
 
     }
+
 }

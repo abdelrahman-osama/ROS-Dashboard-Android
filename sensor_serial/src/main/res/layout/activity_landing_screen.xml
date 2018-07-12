@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LandingScreen"
+    android:orientation="vertical"
+    android:background="@drawable/backgr">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Explore with a new prespective."
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="50sp" />
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="527dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#FFFFFF" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp"
+        android:gravity="center_horizontal"
+        >
+
+
+    <ImageButton
+        android:id="@+id/tripButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/lidarView"
+        android:background="@null"
+        android:layout_margin="20dp"
+        android:elevation="10dp"
+        android:src="@drawable/ic_trip" />
+
+
+    <ImageButton
+        android:id="@+id/lidarView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:layout_margin="20dp"
+        android:elevation="10dp"
+        android:src="@drawable/ic_lidar" />
+
+
+    <ImageButton
+        android:id="@+id/cameraView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/tripButton"
+        android:background="@null"
+        android:layout_margin="20dp"
+        android:elevation="10dp"
+        android:src="@drawable/ic_camera" />
+    </LinearLayout>
+
+
+</LinearLayout>

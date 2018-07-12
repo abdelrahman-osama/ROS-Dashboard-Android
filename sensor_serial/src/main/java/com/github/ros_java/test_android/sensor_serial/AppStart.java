@@ -23,8 +23,9 @@ public class AppStart extends AppCompatActivity {
     public void onBackPressed(){
 //        Toast.makeText(getApplicationContext(), " Press Back again to Exit ", Toast.LENGTH_SHORT).show();
         if(MapsFragment.appState == "initialState"){
-
-//            Toast.makeText(getApplicationContext(), " Initial state ", Toast.LENGTH_SHORT).show();
+            MapsFragment.onReset();
+            this.finish();
+//          Toast.makeText(getApplicationContext(), " Initial state ", Toast.LENGTH_SHORT).show();
 //            System.exit(0);
 
         }

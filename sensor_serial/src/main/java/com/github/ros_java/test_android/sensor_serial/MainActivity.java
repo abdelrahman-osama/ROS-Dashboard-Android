@@ -73,7 +73,7 @@ public class MainActivity extends RosActivity {
 //        nodeConfiguration.setNodeName("camright/raw");
 //        n.execute(videoStreamView, nodeConfiguration);
 
-        Intent intent = new Intent(MainActivity.this, AppStart.class);
+        Intent intent = new Intent(MainActivity.this, LandingScreen.class);
         this.startActivity(intent);
 
     }
